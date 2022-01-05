@@ -61,30 +61,36 @@ fn add_top_row(
     find_label.set_frame(fltk::enums::FrameType::NoBox);
     find_label.visible_focus(false);
     find_label.set_label("&Find:");
-    let mut find_input = fltk::input::Input::default();
+    find_label
+        .set_align(fltk::enums::Align::Inside | fltk::enums::Align::Right);
+    let find_input = fltk::input::Input::default();
     find_label.set_callback({
         let mut find_input = find_input.clone();
         move |_| {
             find_input.take_focus().unwrap();
         }
     });
-    let mut search_button = fltk::button::Button::default();
-    search_button.set_label("&Search");
+    let mut search_button =
+        fltk::button::Button::default().with_label("&Search");
     search_button.set_callback(move |_| {
         sender.send(Action::Search);
     });
-    let mut match_label =
-        fltk::frame::Frame::default().with_label("Match:");
+    let match_label = fltk::frame::Frame::default()
+        .with_label("Match:")
+        .with_align(fltk::enums::Align::Inside | fltk::enums::Align::Right);
     let mut all_radio =
         fltk::button::RadioRoundButton::default().with_label("A&ll Words");
     all_radio.set(true);
-    let mut any_radio =
+    let any_radio =
         fltk::button::RadioRoundButton::default().with_label("A&ny Words");
-    row.set_size(&mut find_label, BUTTON_WIDTH - PAD);
-    row.set_size(&mut search_button, BUTTON_WIDTH);
-    row.set_size(&mut match_label, BUTTON_WIDTH - PAD);
-    row.set_size(&mut all_radio, (BUTTON_WIDTH as f32 * 1.5) as i32);
-    row.set_size(&mut any_radio, (BUTTON_WIDTH as f32 * 1.5) as i32);
+    let label_width = BUTTON_WIDTH - PAD;
+    let radio_width = (BUTTON_WIDTH as f32 * 1.5) as i32;
+    let width = (width / 6).max(radio_width).min(label_width);
+    row.set_size(&find_label, width.min(label_width));
+    row.set_size(&search_button, width.min(label_width));
+    row.set_size(&match_label, width.min(label_width));
+    row.set_size(&all_radio, width.max(radio_width));
+    row.set_size(&any_radio, width.max(radio_width));
     row.end();
     (find_input, all_radio, any_radio, row)
 }

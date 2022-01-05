@@ -27,7 +27,7 @@ impl Application {
         let mut widgets = main_window::make(sender);
         main_window::add_event_handlers(&mut widgets.main_window, sender);
         widgets.main_window.show();
-        let mut app = Self {
+        Self {
             app,
             main_window: widgets.main_window,
             find_input: widgets.find_input,
@@ -36,8 +36,7 @@ impl Application {
             status_bar: widgets.status_bar,
             help_form: None,
             receiver,
-        };
-        app
+        }
     }
 
     pub fn run(&mut self) {

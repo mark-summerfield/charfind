@@ -1,3 +1,10 @@
+# TODO main_window: add_bottom_row() (above status bar)
+# [&Copy] [editable line to copy to] [&Options] [&About] [&Help] [&Quit]
+# TODO main_window: add_middle() { add_table(); add_history_list() &
+# populate it from config }
+#   left: Fo&und Table of 3 cols: Char U+HHHH Description
+#   right: H&istory Table of 3 cols: Char U+HHHH Description
+# TODO config history of up to 20 chars
 src/main.rs
 src/config.rs
 src/application.rs
