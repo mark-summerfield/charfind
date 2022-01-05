@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   version="1.1"
+   viewBox="0 0 48 48"
+   id="svg11300">
+  <defs
+     id="defs3">
+    <radialGradient
+       r="117.14"
+       gradientTransform="matrix(-2.7744 0 0 1.9697 112.76 -872.89)"
+       cx="605.71"
+       cy="486.65"
+       gradientUnits="userSpaceOnUse"
+       xlink:href="#linearGradient5060"
+       id="radialGradient6719" />
+    <linearGradient
+       id="linearGradient5060">
+      <stop
+         offset="0"
+         style="stop-color:black"
+         id="stop5062" />
+      <stop
+         offset="1"
+         style="stop-color:black;stop-opacity:0"
+         id="stop5064" />
+    </linearGradient>
+    <radialGradient
+       r="117.14"
+       gradientTransform="matrix(2.7744 0 0 1.9697 -1891.6 -872.89)"
+       cx="605.71"
+       cy="486.65"
+       gradientUnits="userSpaceOnUse"
+       xlink:href="#linearGradient5060"
+       id="radialGradient6717" />
+    <linearGradient
+       x1="302.86"
+       y1="366.65"
+       gradientTransform="matrix(2.7744 0 0 1.9697 -1892.2 -872.89)"
+       x2="302.86"
+       gradientUnits="userSpaceOnUse"
+       y2="609.51"
+       id="linearGradient6715">
+      <stop
+         offset="0"
+         style="stop-color:black;stop-opacity:0"
+         id="stop5050" />
+      <stop
+         offset=".5"
+         style="stop-color:black"
+         id="stop5056" />
+      <stop
+         offset="1"
+         style="stop-color:black;stop-opacity:0"
+         id="stop5052" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient4750">
+      <stop
+         offset="0"
+         style="stop-color:#ffffff;stop-opacity:0"
+         id="stop4752" />
+      <stop
+         offset=".5"
+         style="stop-color:#ffffff"
+         id="stop4758" />
+      <stop
+         offset="1"
+         style="stop-color:#ffffff;stop-opacity:0"
+         id="stop4754" />
+    </linearGradient>
+    <radialGradient
+       r="15.095"
+       gradientTransform="matrix(2.1541 -4.6772e-16 4.6772e-16 2.1541 -76.776 -33.597)"
+       cx="24.5"
+       cy="29.5"
+       gradientUnits="userSpaceOnUse"
+       id="radialGradient4716">
+      <stop
+         offset="0"
+         style="stop-color:#f2f4f1"
+         id="stop4712" />
+      <stop
+         offset="1"
+         style="stop-color:#d3d7cf"
+         id="stop4714" />
+    </radialGradient>
+    <linearGradient
+       x1="24.095"
+       y1="12.595"
+       gradientTransform="matrix(.99368 0 0 .99368 -47.943 1.0379)"
+       x2="24.095"
+       gradientUnits="userSpaceOnUse"
+       y2="34.095"
+       id="linearGradient4734">
+      <stop
+         offset="0"
+         style="stop-color:#eeeeec"
+         id="stop4730" />
+      <stop
+         offset="1"
+         style="stop-color:#ffffff"
+         id="stop4732" />
+    </linearGradient>
+    <linearGradient
+       x1="8.1169"
+       y1="7.9334"
+       x2="9.0675"
+       gradientUnits="userSpaceOnUse"
+       xlink:href="#linearGradient4750"
+       y2="6.7844"
+       id="linearGradient4756" />
+    <linearGradient
+       x1="38.293"
+       y1="6.7174"
+       x2="39.438"
+       gradientUnits="userSpaceOnUse"
+       xlink:href="#linearGradient4750"
+       y2="8.162"
+       id="linearGradient4760" />
+  </defs>
+  <g
+     id="layer1">
+    <g
+       transform="matrix(.021713 0 0 .024526 43.187 37.955)"
+       id="g6707">
+      <rect
+         x="-1559.3"
+         y="-150.7"
+         width="1339.6"
+         height="478.36"
+         style="opacity:.40206;color:black;fill:url(#linearGradient6715)"
+         id="rect6709" />
+      <path
+         d="m-219.62-150.68v478.33c142.88 0.9 345.4-107.17 345.4-239.2 0-132.02-159.44-239.13-345.4-239.13z"
+         style="opacity:.40206;color:black;fill:url(#radialGradient6717)"
+         id="path6711" />
+      <path
+         d="m-1559.3-150.68v478.33c-142.8 0.9-345.4-107.17-345.4-239.2 0-132.02 159.5-239.13 345.4-239.13z"
+         style="opacity:.40206;color:black;fill:url(#radialGradient6719)"
+         id="path6713" />
+    </g>
+    <rect
+       x="5.5075"
+       y="4.5201"
+       width="37.005"
+       height="37.96"
+       ry="4.6513"
+       rx="4.5343"
+       style="color:#000000;display:block;stroke:#888a85;fill:#d3d7cf"
+       id="rect2960" />
+    <rect
+       x="-38.503"
+       y="7.4968"
+       transform="scale(-1,1)"
+       width="29.006"
+       height="29.006"
+       ry="3.5542"
+       rx="3.5542"
+       style="color:#000000;display:block;stroke:url(#linearGradient4734);fill:url(#radialGradient4716)"
+       id="rect3835" />
+    <rect
+       x="6.4573"
+       y="5.4944"
+       width="35.105"
+       height="36.011"
+       ry="3.5375"
+       rx="3.5375"
+       style="opacity:.48889;color:#000000;display:block;stroke:#ffffff;fill:none"
+       id="rect4740" />
+    <path
+       d="m5.9375 38.5c0.0625 1.125 1.3125 2.938 2.8125 3.312l2.188-5.5-0.938-0.687-4.0625 2.875z"
+       style="opacity:.48889;color:#000000;display:block;fill:#ffffff"
+       id="path4742" />
+    <path
+       d="m42.062 38.5c-0.062 1.125-1.312 2.938-2.812 3.312l-2.188-5.5 0.938-0.687 4.062 2.875z"
+       style="opacity:.48889;color:#000000;display:block;fill:#ffffff"
+       id="path4744" />
+    <path
+       d="m41.5 7.125c-0.438-0.5625-1.188-1.625-2.188-1.9375l-1.937 2.5625 0.937 1 3.188-1.625z"
+       style="color:#000000;display:block;fill:url(#linearGradient4760)"
+       id="path4746" />
+    <path
+       d="m6.4375 7.125c0.4375-0.5625 1.125-1.5625 2.125-1.875l1.8755 2.6875-0.688 1-3.3125-1.8125z"
+       style="color:#000000;display:block;fill:url(#linearGradient4756)"
+       id="path4748" />
+    <g
+       id="text4551"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:26.29872513px;line-height:125%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans Bold';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="scale(1.0133767,0.98679987)"
+       aria-label="ü">
+      <path
+         id="path4553"
+         style="stroke-width:1px"
+         d="m 26.213641,19.617438 v 7.794593 q 0,3.659735 2.465505,3.659735 1.3098,0 2.105953,-1.117182 0.808994,-1.130024 0.808994,-2.889264 v -7.447882 h 3.60837 v 10.786587 q 0,1.772082 0.102729,3.107564 H 31.863757 Q 31.709663,31.66246 31.709663,30.750737 h -0.06421 q -0.719105,1.579464 -1.836287,2.29857 -1.104341,0.719106 -2.632441,0.719106 -2.208682,0 -3.39007,-1.348324 -1.181388,-1.361164 -1.181388,-3.980764 v -8.821887 z m 4.16054,-1.502417 v -2.812217 h 2.786535 v 2.812217 z m -5.57307,0 v -2.812217 h 2.748012 v 2.812217 z" />
+    </g>
+  </g>
+  <metadata
+     id="metadata38">
+    <rdf:RDF>
+      <cc:Work>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/publicdomain/" />
+        <dc:publisher>
+          <cc:Agent
+             rdf:about="http://openclipart.org/">
+            <dc:title>Openclipart</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:title></dc:title>
+        <dc:date>2010-03-29T08:00:45</dc:date>
+        <dc:description>&quot;Character map&quot; icon from &lt;a href=&quot;http://tango.freedesktop.org/Tango_Desktop_Project&quot;&gt; Tango Project &lt;/a&gt; \n&lt;br&gt;&lt;br&gt;\nSince version 0.8.90 Tango Project icons are Public Domain: &lt;a href=&quot;http://tango.freedesktop.org/Frequently_Asked_Questions#Terms_of_Use.3F&quot;&gt; Tango Project FAQ &lt;/a&gt;</dc:description>
+        <dc:source>https://openclipart.org/detail/35191/tango-accesories-character-map-by-warszawianka</dc:source>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>warszawianka</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>character</rdf:li>
+            <rdf:li>externalsource</rdf:li>
+            <rdf:li>icon</rdf:li>
+            <rdf:li>key</rdf:li>
+            <rdf:li>letter</rdf:li>
+            <rdf:li>tango</rdf:li>
+            <rdf:li>writing</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/publicdomain/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>
