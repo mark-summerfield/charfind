@@ -6,7 +6,7 @@ mod application;
 mod config;
 mod fixed;
 mod html_form;
-mod mainwindow;
+mod main_window;
 mod options_form;
 mod util;
 

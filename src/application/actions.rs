@@ -23,10 +23,10 @@ impl Application {
     }
 
     pub(crate) fn on_help(&mut self) {
-        if let Some(helpform) = &mut self.helpform {
-            helpform.show();
+        if let Some(help_form) = &mut self.help_form {
+            help_form.show();
         } else {
-            self.helpform = Some(html_form::Form::new(
+            self.help_form = Some(html_form::Form::new(
                 "Help", HELP_HTML, false, 380, 420, true,
             ));
         }
@@ -35,10 +35,10 @@ impl Application {
     pub(crate) fn on_quit(&mut self) {
         let config = CONFIG.get().read().unwrap();
         config.save(
-            self.mainwindow.x(),
-            self.mainwindow.y(),
-            self.mainwindow.width(),
-            self.mainwindow.height(),
+            self.main_window.x(),
+            self.main_window.y(),
+            self.main_window.width(),
+            self.main_window.height(),
         );
         self.app.quit();
     }

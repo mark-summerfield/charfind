@@ -5,14 +5,17 @@ mod actions;
 use super::CONFIG;
 use crate::fixed::Action;
 use crate::html_form;
-use crate::mainwindow;
+use crate::main_window;
 use fltk::prelude::*;
 
 pub struct Application {
     app: fltk::app::App,
-    mainwindow: fltk::window::Window,
-    statusbar: fltk::frame::Frame,
-    helpform: Option<html_form::Form>,
+    main_window: fltk::window::Window,
+    find_input: fltk::input::Input,
+    all_radio: fltk::button::RadioRoundButton,
+    any_radio: fltk::button::RadioRoundButton,
+    status_bar: fltk::frame::Frame,
+    help_form: Option<html_form::Form>,
     receiver: fltk::app::Receiver<Action>,
 }
 
@@ -21,14 +24,17 @@ impl Application {
         let app =
             fltk::app::App::default().with_scheme(fltk::app::Scheme::Gleam);
         let (sender, receiver) = fltk::app::channel::<Action>();
-        let (mut mainwindow, statusbar) = mainwindow::make(sender);
-        mainwindow::add_event_handlers(&mut mainwindow, sender);
-        mainwindow.show();
+        let mut widgets = main_window::make(sender);
+        main_window::add_event_handlers(&mut widgets.main_window, sender);
+        widgets.main_window.show();
         let mut app = Self {
             app,
-            mainwindow,
-            statusbar,
-            helpform: None,
+            main_window: widgets.main_window,
+            find_input: widgets.find_input,
+            all_radio: widgets.all_radio,
+            any_radio: widgets.any_radio,
+            status_bar: widgets.status_bar,
+            help_form: None,
             receiver,
         };
         app
@@ -50,13 +56,13 @@ impl Application {
     }
 
     fn set_status(&mut self, message: &str, timeout: Option<f64>) {
-        self.statusbar.set_label(message);
+        self.status_bar.set_label(message);
         fltk::app::redraw(); // redraws the world
         if let Some(timeout) = timeout {
             fltk::app::add_timeout(timeout, {
-                let mut statusbar = self.statusbar.clone();
+                let mut status_bar = self.status_bar.clone();
                 move || {
-                    statusbar.set_label("");
+                    status_bar.set_label("");
                     fltk::app::redraw(); // redraws the world
                 }
             });
@@ -64,7 +70,7 @@ impl Application {
     }
 
     fn clear_status(&mut self) {
-        self.statusbar.set_label("");
+        self.status_bar.set_label("");
         fltk::app::redraw(); // redraws the world
     }
 }

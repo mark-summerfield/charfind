@@ -2,7 +2,7 @@ src/main.rs
 src/config.rs
 src/application.rs
 src/application/actions.rs
-src/mainwindow.rs
+src/main_window.rs
 src/html_form.rs
 src/options_form.rs
 src/fixed.rs # VERSION
