@@ -7,6 +7,7 @@ use crate::fixed::Action;
 use crate::html_form;
 use crate::main_window;
 use fltk::prelude::*;
+use fltk_table::SmartTable;
 
 pub struct Application {
     app: fltk::app::App,
@@ -14,6 +15,8 @@ pub struct Application {
     find_combo: fltk::misc::InputChoice,
     all_radio: fltk::button::RadioRoundButton,
     any_radio: fltk::button::RadioRoundButton,
+    table: fltk_table::SmartTable,
+    copy_input: fltk::input::Input,
     status_bar: fltk::frame::Frame,
     help_form: Option<html_form::Form>,
     receiver: fltk::app::Receiver<Action>,
@@ -33,6 +36,8 @@ impl Application {
             find_combo: widgets.find_combo,
             all_radio: widgets.all_radio,
             any_radio: widgets.any_radio,
+            table: widgets.table,
+            copy_input: widgets.copy_input,
             status_bar: widgets.status_bar,
             help_form: None,
             receiver,
@@ -44,7 +49,10 @@ impl Application {
             if let Some(action) = self.receiver.recv() {
                 match action {
                     Action::Search => println!("Search"),
-                    Action::Copy => println!("Copy"),
+                    Action::Copy => println!("Copy"), // copy copy_input to clipboard
+                    Action::CopyHistory(c) => {
+                        println!("CopyHistory: {}", c)
+                    }
                     Action::Options => self.on_options(),
                     Action::About => self.on_about(),
                     Action::Help => self.on_help(),

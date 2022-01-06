@@ -1,10 +1,11 @@
 // Copyright © 2021 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
-use crate::fixed::{APPNAME, SCALE_MAX, SCALE_MIN};
+use crate::fixed::{
+    APPNAME, HISTORY_SIZE, SCALE_MAX, SCALE_MIN, WINDOW_HEIGHT_MIN,
+    WINDOW_WIDTH_MIN,
+};
 use crate::util;
-
-const SIZE: usize = 9;
 
 #[derive(Clone, Debug)]
 pub struct Config {
@@ -14,8 +15,8 @@ pub struct Config {
     pub window_width: i32,
     pub window_scale: f32,
     pub filename: std::path::PathBuf,
-    pub searches: [String; SIZE],
-    pub history: [char; SIZE],
+    pub searches: [String; HISTORY_SIZE],
+    pub history: [char; HISTORY_SIZE],
 }
 
 impl Config {
@@ -61,14 +62,14 @@ impl Config {
 
     fn history_str(&self) -> String {
         let mut history = String::new();
-        for i in 0..SIZE {
+        for i in 0..HISTORY_SIZE {
             history.push(self.history[i]);
         }
         history
     }
 
     fn save_searches(&self, ini: &mut ini::Ini) {
-        for i in 0..SIZE {
+        for i in 0..HISTORY_SIZE {
             let key = format!("{}{}", SEARCH_KEY, i + 1);
             ini.with_section(Some(GENERAL_SECTION))
                 .set(key, self.searches[i].clone());
@@ -86,8 +87,8 @@ impl Default for Config {
         Self {
             window_x: -1,
             window_y: -1,
-            window_height: 440,
-            window_width: 400,
+            window_height: WINDOW_HEIGHT_MIN,
+            window_width: WINDOW_WIDTH_MIN,
             window_scale: 1.0,
             filename: std::path::PathBuf::new(),
             searches: [
@@ -160,7 +161,7 @@ fn read_general_properties(
             config.history[i] = c;
         }
     }
-    for i in 0..SIZE {
+    for i in 0..HISTORY_SIZE {
         let key = format!("{}{}", SEARCH_KEY, i + 1);
         if let Some(value) = properties.get(&key) {
             config.searches[i] = value.to_string();

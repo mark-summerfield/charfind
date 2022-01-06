@@ -3,18 +3,21 @@
 
 use super::CONFIG;
 use crate::fixed::{
-    Action, APPNAME, BUTTON_WIDTH, ICON, PAD, TOOLBAR_HEIGHT,
-    TOOLBUTTON_SIZE,
+    Action, APPNAME, BUTTON_HEIGHT, BUTTON_WIDTH, HISTORY_SIZE, ICON, PAD,
+    TOOLBAR_HEIGHT, TOOLBUTTON_SIZE, WINDOW_HEIGHT_MIN, WINDOW_WIDTH_MIN,
 };
 use crate::util;
 use fltk::prelude::*;
+use fltk_table::{SmartTable, TableOpts};
 
 pub struct Widgets {
     pub main_window: fltk::window::Window,
     pub find_combo: fltk::misc::InputChoice,
-    pub status_bar: fltk::frame::Frame,
     pub all_radio: fltk::button::RadioRoundButton,
     pub any_radio: fltk::button::RadioRoundButton,
+    pub table: fltk_table::SmartTable,
+    pub copy_input: fltk::input::Input,
+    pub status_bar: fltk::frame::Frame,
 }
 
 pub fn make(sender: fltk::app::Sender<Action>) -> Widgets {
@@ -24,8 +27,12 @@ pub fn make(sender: fltk::app::Sender<Action>) -> Widgets {
     let mut main_window =
         fltk::window::Window::new(x, y, width, height, APPNAME);
     main_window.set_icon(Some(icon));
-    let size = ((TOOLBUTTON_SIZE * 4) / 3) * 6;
-    main_window.size_range(size, size, i32::MAX, i32::MAX);
+    main_window.size_range(
+        WINDOW_WIDTH_MIN,
+        WINDOW_HEIGHT_MIN,
+        i32::MAX,
+        i32::MAX,
+    );
     main_window.make_resizable(true);
     let mut vbox = fltk::group::Flex::default()
         .size_of_parent()
@@ -34,13 +41,21 @@ pub fn make(sender: fltk::app::Sender<Action>) -> Widgets {
     let (find_combo, all_radio, any_radio, top_row) =
         add_top_row(sender, width);
     vbox.set_size(&top_row, TOOLBAR_HEIGHT);
-    fltk::frame::Frame::default()
-        .with_size(100, 100)
-        .with_label("Central Area");
+    let (table, middle_row) = add_middle_row(sender, width);
+    let (copy_input, mut bottom_row) = add_bottom_row(sender, width);
+    vbox.set_size(&bottom_row, TOOLBAR_HEIGHT);
     let status_bar = add_status_bar(&mut vbox, width);
     vbox.end();
     main_window.end();
-    Widgets { main_window, find_combo, all_radio, any_radio, status_bar }
+    Widgets {
+        main_window,
+        find_combo,
+        all_radio,
+        any_radio,
+        table,
+        copy_input,
+        status_bar,
+    }
 }
 
 fn add_top_row(
@@ -63,7 +78,8 @@ fn add_top_row(
     find_label.set_label("&Find:");
     find_label
         .set_align(fltk::enums::Align::Inside | fltk::enums::Align::Right);
-    let find_combo = fltk::misc::InputChoice::default();
+    let mut find_combo = fltk::misc::InputChoice::default();
+    initialize_find_combo(&mut find_combo);
     find_label.set_callback({
         let mut find_combo = find_combo.clone();
         move |_| {
@@ -87,12 +103,113 @@ fn add_top_row(
     let radio_width = (BUTTON_WIDTH as f32 * 1.5) as i32;
     let width = (width / 6).max(radio_width).min(label_width);
     row.set_size(&find_label, width.min(label_width));
-    row.set_size(&search_button, width.min(label_width));
+    row.set_size(&search_button, width.min(BUTTON_WIDTH));
     row.set_size(&match_label, width.min(label_width));
     row.set_size(&all_radio, width.max(radio_width));
     row.set_size(&any_radio, width.max(radio_width));
     row.end();
     (find_combo, all_radio, any_radio, row)
+}
+
+fn initialize_find_combo(find_combo: &mut fltk::misc::InputChoice) {
+    let config = CONFIG.get().read().unwrap();
+    for i in 0..HISTORY_SIZE {
+        find_combo.add(&config.searches[i]);
+    }
+}
+
+fn add_middle_row(
+    sender: fltk::app::Sender<Action>,
+    width: i32,
+) -> (fltk_table::SmartTable, fltk::group::Flex) {
+    let mut row = fltk::group::Flex::default()
+        .with_size(width, TOOLBAR_HEIGHT)
+        .with_type(fltk::group::FlexType::Row);
+    row.set_margin(PAD);
+    let mut table = SmartTable::default().with_opts(TableOpts {
+        rows: 100,
+        cols: 3,
+        editable: false,
+        ..Default::default()
+    });
+    table.set_col_header_value(0, "Char");
+    table.set_col_header_value(1, "U+HHHH");
+    table.set_col_header_value(2, "Description");
+    let column = add_copy_buttons(sender);
+    row.set_size(&column, BUTTON_WIDTH * 2);
+    row.end();
+    (table, row)
+}
+
+fn add_copy_buttons(
+    sender: fltk::app::Sender<Action>,
+) -> fltk::group::Flex {
+    let mut column = fltk::group::Flex::default()
+        .with_type(fltk::group::FlexType::Column);
+    column.set_margin(PAD);
+    let config = CONFIG.get().read().unwrap();
+    for i in 0..HISTORY_SIZE {
+        let label = format!("&{} Copy |{}|", i + 1, config.history[i]);
+        let mut button = fltk::button::Button::default().with_label(&label);
+        button.visible_focus(false);
+        button.set_callback(move |button| {
+            let mut label = button.label();
+            label.pop(); // drop '|'
+            if let Some(c) = label.pop() {
+                sender.send(Action::CopyHistory(c));
+            }
+        });
+        column.set_size(&button, BUTTON_HEIGHT);
+    }
+    column.end();
+    column
+}
+
+fn add_bottom_row(
+    sender: fltk::app::Sender<Action>,
+    width: i32,
+) -> (fltk::input::Input, fltk::group::Flex) {
+    // TODO tooltips to button & radio buttons
+    let mut row = fltk::group::Flex::default()
+        .with_size(width, TOOLBAR_HEIGHT)
+        .with_type(fltk::group::FlexType::Row);
+    row.set_margin(PAD);
+    let mut copy_button =
+        fltk::button::Button::default().with_label("&Copy");
+    copy_button.set_callback(move |_| {
+        sender.send(Action::Copy);
+    });
+    let copy_input = fltk::input::Input::default();
+    let mut options_button =
+        fltk::button::Button::default().with_label("&Options");
+    options_button.set_callback(move |_| {
+        sender.send(Action::Options);
+    });
+    let mut about_button =
+        fltk::button::Button::default().with_label("&About");
+    about_button.set_callback(move |_| {
+        sender.send(Action::About);
+    });
+    let mut help_button =
+        fltk::button::Button::default().with_label("&Help");
+    help_button.set_callback(move |_| {
+        sender.send(Action::Help);
+    });
+    let mut quit_button =
+        fltk::button::Button::default().with_label("&Quit");
+    quit_button.set_callback(move |_| {
+        sender.send(Action::Quit);
+    });
+    let width = (width / 6)
+        .max((BUTTON_WIDTH as f32 * 1.5) as i32)
+        .min(BUTTON_WIDTH);
+    row.set_size(&copy_button, width);
+    row.set_size(&options_button, width);
+    row.set_size(&about_button, width);
+    row.set_size(&help_button, width);
+    row.set_size(&quit_button, width);
+    row.end();
+    (copy_input, row)
 }
 
 fn add_status_bar(

@@ -1,10 +1,3 @@
-# TODO main_window: add_bottom_row() (above status bar)
-# [&Copy] [editable line to copy to] [&Options] [&About] [&Help] [&Quit]
-# TODO main_window: add_middle() { add_table(); add_history_list() &
-# populate it from config }
-#   left: Fo&und Table of 3 cols: Char U+HHHH Description
-#   right: History 9 buttons [&1 Copy: |->|] ... [&9 Copy: |€|]
-# TODO config history of up to 20 chars
 src/main.rs
 src/config.rs
 src/application.rs
@@ -23,7 +16,7 @@ st.sh
 deploy.sh
 deploy.bat
 
-# NOTES
+# NOTE
 # For each word:
 #   If the word is a number matching [0-9]+ then search for this number
 #   twice, once as a decimal and once as hexadecimal; e.g., '97' → 97
