@@ -4,7 +4,7 @@
 use super::CONFIG;
 use crate::fixed::{
     Action, APPNAME, BUTTON_HEIGHT, BUTTON_WIDTH, HISTORY_SIZE, ICON, PAD,
-    TOOLBAR_HEIGHT, TOOLBUTTON_SIZE, WINDOW_HEIGHT_MIN, WINDOW_WIDTH_MIN,
+    ROW_HEIGHT, TABLE_ROWS, WINDOW_HEIGHT_MIN, WINDOW_WIDTH_MIN,
 };
 use crate::util;
 use fltk::prelude::*;
@@ -40,10 +40,10 @@ pub fn make(sender: fltk::app::Sender<Action>) -> Widgets {
     vbox.set_margin(PAD);
     let (find_combo, all_radio, any_radio, top_row) =
         add_top_row(sender, width);
-    vbox.set_size(&top_row, TOOLBAR_HEIGHT);
+    vbox.set_size(&top_row, ROW_HEIGHT);
     let (table, middle_row) = add_middle_row(sender, width);
     let (copy_input, mut bottom_row) = add_bottom_row(sender, width);
-    vbox.set_size(&bottom_row, TOOLBAR_HEIGHT);
+    vbox.set_size(&bottom_row, ROW_HEIGHT);
     let status_bar = add_status_bar(&mut vbox, width);
     vbox.end();
     main_window.end();
@@ -69,7 +69,7 @@ fn add_top_row(
 ) {
     // TODO tooltips to button & radio buttons
     let mut row = fltk::group::Flex::default()
-        .with_size(width, TOOLBAR_HEIGHT)
+        .with_size(width, ROW_HEIGHT)
         .with_type(fltk::group::FlexType::Row);
     row.set_margin(PAD);
     let mut find_label = fltk::button::Button::default();
@@ -123,11 +123,11 @@ fn add_middle_row(
     width: i32,
 ) -> (fltk_table::SmartTable, fltk::group::Flex) {
     let mut row = fltk::group::Flex::default()
-        .with_size(width, TOOLBAR_HEIGHT)
+        .with_size(width, ROW_HEIGHT)
         .with_type(fltk::group::FlexType::Row);
     row.set_margin(PAD);
     let mut table = SmartTable::default().with_opts(TableOpts {
-        rows: 100,
+        rows: TABLE_ROWS,
         cols: 3,
         editable: false,
         ..Default::default()
@@ -135,6 +135,9 @@ fn add_middle_row(
     table.set_col_header_value(0, "Char");
     table.set_col_header_value(1, "U+HHHH");
     table.set_col_header_value(2, "Description");
+    for i in 0..TABLE_ROWS {
+        table.set_row_header_value(i, &(i + 1).to_string());
+    }
     let column = add_copy_buttons(sender);
     row.set_size(&column, BUTTON_WIDTH * 2);
     row.end();
@@ -147,16 +150,23 @@ fn add_copy_buttons(
     let mut column = fltk::group::Flex::default()
         .with_type(fltk::group::FlexType::Column);
     column.set_margin(PAD);
+    let mut button =
+        fltk::button::Button::default().with_label("Add from &Table");
+    button.visible_focus(false);
+    button.set_callback(move |_| {
+        sender.send(Action::AddFromTable);
+    });
+    column.set_size(&button, BUTTON_HEIGHT);
     let config = CONFIG.get().read().unwrap();
     for i in 0..HISTORY_SIZE {
-        let label = format!("&{} Copy |{}|", i + 1, config.history[i]);
+        let label = format!("&{} Add |{}|", i + 1, config.history[i]);
         let mut button = fltk::button::Button::default().with_label(&label);
         button.visible_focus(false);
         button.set_callback(move |button| {
             let mut label = button.label();
             label.pop(); // drop '|'
             if let Some(c) = label.pop() {
-                sender.send(Action::CopyHistory(c));
+                sender.send(Action::AddChar(c));
             }
         });
         column.set_size(&button, BUTTON_HEIGHT);
@@ -171,7 +181,7 @@ fn add_bottom_row(
 ) -> (fltk::input::Input, fltk::group::Flex) {
     // TODO tooltips to button & radio buttons
     let mut row = fltk::group::Flex::default()
-        .with_size(width, TOOLBAR_HEIGHT)
+        .with_size(width, ROW_HEIGHT)
         .with_type(fltk::group::FlexType::Row);
     row.set_margin(PAD);
     let mut copy_button =
@@ -217,12 +227,12 @@ fn add_status_bar(
     width: i32,
 ) -> fltk::frame::Frame {
     let mut status_row = fltk::group::Flex::default()
-        .with_size(width, TOOLBUTTON_SIZE)
+        .with_size(width, BUTTON_HEIGHT)
         .with_type(fltk::group::FlexType::Row);
     let mut status_bar = fltk::frame::Frame::default();
     status_bar.set_frame(fltk::enums::FrameType::EngravedFrame);
     status_row.end();
-    vbox.set_size(&status_row, TOOLBUTTON_SIZE);
+    vbox.set_size(&status_row, BUTTON_HEIGHT);
     status_bar
 }
 

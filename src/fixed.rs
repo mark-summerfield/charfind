@@ -11,20 +11,21 @@ pub const ICON: &str = include_str!("../images/charfind.svg");
 pub const HISTORY_SIZE: usize = 9;
 pub const PAD: i32 = 6;
 pub const WINDOW_WIDTH_MIN: i32 = 660;
-pub const WINDOW_HEIGHT_MIN: i32 = 480;
-pub const TOOLBUTTON_SIZE: i32 = 28;
-pub const TOOLBAR_HEIGHT: i32 = ((TOOLBUTTON_SIZE * 3) / 2) + (2 * PAD);
+pub const WINDOW_HEIGHT_MIN: i32 = 490;
+pub const ROW_HEIGHT: i32 = 40;
 pub const BUTTON_HEIGHT: i32 = 30;
 pub const BUTTON_WIDTH: i32 = 70;
 pub const SCALE_MIN: f32 = 0.5;
 pub const SCALE_MAX: f32 = 3.5;
+pub const TABLE_ROWS: i32 = 200;
 pub const MESSAGE_DELAY: f64 = 10.0; // seconds
 
 #[derive(Copy, Clone, Debug)]
 pub enum Action {
     Search,
     Copy,
-    CopyHistory(char),
+    AddChar(char),
+    AddFromTable,
     Options,
     About,
     Help,

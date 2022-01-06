@@ -50,9 +50,10 @@ impl Application {
                 match action {
                     Action::Search => println!("Search"),
                     Action::Copy => println!("Copy"), // copy copy_input to clipboard
-                    Action::CopyHistory(c) => {
-                        println!("CopyHistory: {}", c)
+                    Action::AddChar(c) => {
+                        println!("AddChar: {}", c) // add to copy_input
                     }
+                    Action::AddFromTable => println!("AddFromTable"), // add to copy_input
                     Action::Options => self.on_options(),
                     Action::About => self.on_about(),
                     Action::Help => self.on_help(),
