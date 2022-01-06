@@ -1,9 +1,13 @@
+# TODO config: search1...search9 (last 9 searches) with defaults of
+#   arrow, asterisk, block, box, euro, fraction, geometric, greek symbol,
+#   technical
+# TODO config: history: one string of up to 9 chars
 # TODO main_window: add_bottom_row() (above status bar)
 # [&Copy] [editable line to copy to] [&Options] [&About] [&Help] [&Quit]
 # TODO main_window: add_middle() { add_table(); add_history_list() &
 # populate it from config }
 #   left: Fo&und Table of 3 cols: Char U+HHHH Description
-#   right: H&istory Table of 3 cols: Char U+HHHH Description
+#   right: History 9 buttons [&1 Copy: |->|] ... [&9 Copy: |€|]
 # TODO config history of up to 20 chars
 src/main.rs
 src/config.rs

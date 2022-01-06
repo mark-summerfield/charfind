@@ -11,7 +11,7 @@ use fltk::prelude::*;
 
 pub struct Widgets {
     pub main_window: fltk::window::Window,
-    pub find_input: fltk::input::Input,
+    pub find_combo: fltk::misc::InputChoice,
     pub status_bar: fltk::frame::Frame,
     pub all_radio: fltk::button::RadioRoundButton,
     pub any_radio: fltk::button::RadioRoundButton,
@@ -31,7 +31,7 @@ pub fn make(sender: fltk::app::Sender<Action>) -> Widgets {
         .size_of_parent()
         .with_type(fltk::group::FlexType::Column);
     vbox.set_margin(PAD);
-    let (find_input, all_radio, any_radio, top_row) =
+    let (find_combo, all_radio, any_radio, top_row) =
         add_top_row(sender, width);
     vbox.set_size(&top_row, TOOLBAR_HEIGHT);
     fltk::frame::Frame::default()
@@ -40,14 +40,14 @@ pub fn make(sender: fltk::app::Sender<Action>) -> Widgets {
     let status_bar = add_status_bar(&mut vbox, width);
     vbox.end();
     main_window.end();
-    Widgets { main_window, find_input, all_radio, any_radio, status_bar }
+    Widgets { main_window, find_combo, all_radio, any_radio, status_bar }
 }
 
 fn add_top_row(
     sender: fltk::app::Sender<Action>,
     width: i32,
 ) -> (
-    fltk::input::Input,
+    fltk::misc::InputChoice,
     fltk::button::RadioRoundButton,
     fltk::button::RadioRoundButton,
     fltk::group::Flex,
@@ -63,11 +63,11 @@ fn add_top_row(
     find_label.set_label("&Find:");
     find_label
         .set_align(fltk::enums::Align::Inside | fltk::enums::Align::Right);
-    let find_input = fltk::input::Input::default();
+    let find_combo = fltk::misc::InputChoice::default();
     find_label.set_callback({
-        let mut find_input = find_input.clone();
+        let mut find_combo = find_combo.clone();
         move |_| {
-            find_input.take_focus().unwrap();
+            find_combo.take_focus().unwrap();
         }
     });
     let mut search_button =
@@ -92,7 +92,7 @@ fn add_top_row(
     row.set_size(&all_radio, width.max(radio_width));
     row.set_size(&any_radio, width.max(radio_width));
     row.end();
-    (find_input, all_radio, any_radio, row)
+    (find_combo, all_radio, any_radio, row)
 }
 
 fn add_status_bar(

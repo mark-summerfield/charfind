@@ -11,7 +11,7 @@ use fltk::prelude::*;
 pub struct Application {
     app: fltk::app::App,
     main_window: fltk::window::Window,
-    find_input: fltk::input::Input,
+    find_combo: fltk::misc::InputChoice,
     all_radio: fltk::button::RadioRoundButton,
     any_radio: fltk::button::RadioRoundButton,
     status_bar: fltk::frame::Frame,
@@ -30,7 +30,7 @@ impl Application {
         Self {
             app,
             main_window: widgets.main_window,
-            find_input: widgets.find_input,
+            find_combo: widgets.find_combo,
             all_radio: widgets.all_radio,
             any_radio: widgets.any_radio,
             status_bar: widgets.status_bar,
