@@ -8,7 +8,6 @@ use std::env;
 pub static APPNAME: &str = "CharFind";
 pub static VERSION: &str = "0.1.0";
 pub const ICON: &str = include_str!("../images/charfind.svg");
-pub const SIZE: usize = 9;
 pub const PAD: i32 = 6;
 pub const TOOLBUTTON_SIZE: i32 = 28;
 pub const TOOLBAR_HEIGHT: i32 = ((TOOLBUTTON_SIZE * 3) / 2) + (2 * PAD);

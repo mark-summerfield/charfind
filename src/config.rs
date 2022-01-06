@@ -4,6 +4,8 @@
 use crate::fixed::{APPNAME, SCALE_MAX, SCALE_MIN};
 use crate::util;
 
+const SIZE: usize = 9;
+
 #[derive(Clone, Debug)]
 pub struct Config {
     pub window_x: i32,
@@ -12,6 +14,8 @@ pub struct Config {
     pub window_width: i32,
     pub window_scale: f32,
     pub filename: std::path::PathBuf,
+    pub searches: [String; SIZE],
+    pub history: [char; SIZE],
 }
 
 impl Config {
@@ -23,6 +27,9 @@ impl Config {
         if let Ok(ini) = ini::Ini::load_from_file(&config.filename) {
             if let Some(properties) = ini.section(Some(WINDOW_SECTION)) {
                 read_window_properties(properties, &mut config);
+            }
+            if let Some(properties) = ini.section(Some(GENERAL_SECTION)) {
+                read_general_properties(properties, &mut config);
             }
         }
         config
@@ -39,6 +46,9 @@ impl Config {
                 .set(WIDTH_KEY, width.to_string())
                 .set(HEIGHT_KEY, height.to_string())
                 .set(SCALE_KEY, fltk::app::screen_scale(0).to_string());
+            ini.with_section(Some(GENERAL_SECTION))
+                .set(HISTORY_KEY, self.history_str());
+            self.save_searches(&mut ini);
             match ini.write_to_file(&self.filename) {
                 Ok(_) => {}
                 Err(err) => self.warning(&format!(
@@ -46,6 +56,22 @@ impl Config {
                     err
                 )),
             }
+        }
+    }
+
+    fn history_str(&self) -> String {
+        let mut history = String::new();
+        for i in 0..SIZE {
+            history.push(self.history[i]);
+        }
+        history
+    }
+
+    fn save_searches(&self, ini: &mut ini::Ini) {
+        for i in 0..SIZE {
+            let key = format!("{}{}", SEARCH_KEY, i + 1);
+            ini.with_section(Some(GENERAL_SECTION))
+                .set(key, self.searches[i].clone());
         }
     }
 
@@ -64,6 +90,18 @@ impl Default for Config {
             window_width: 400,
             window_scale: 1.0,
             filename: std::path::PathBuf::new(),
+            searches: [
+                "arrow".to_string(),
+                "asterisk".to_string(),
+                "block".to_string(),
+                "box".to_string(),
+                "euro".to_string(),
+                "fraction".to_string(),
+                "geometric".to_string(),
+                "greek symbol".to_string(),
+                "technical".to_string(),
+            ],
+            history: ['•', '…', '—', '€', '£', '←', '→', '↑', '↓'],
         }
     }
 }
@@ -113,9 +151,29 @@ fn read_window_properties(
     }
 }
 
+fn read_general_properties(
+    properties: &ini::Properties,
+    config: &mut Config,
+) {
+    if let Some(value) = properties.get(HISTORY_KEY) {
+        for (i, c) in value.chars().enumerate() {
+            config.history[i] = c;
+        }
+    }
+    for i in 0..SIZE {
+        let key = format!("{}{}", SEARCH_KEY, i + 1);
+        if let Some(value) = properties.get(&key) {
+            config.searches[i] = value.to_string();
+        }
+    }
+}
+
 static WINDOW_SECTION: &str = "Window";
 static X_KEY: &str = "x";
 static Y_KEY: &str = "y";
 static WIDTH_KEY: &str = "width";
 static HEIGHT_KEY: &str = "height";
 static SCALE_KEY: &str = "scale";
+static GENERAL_SECTION: &str = "General";
+static HISTORY_KEY: &str = "history";
+static SEARCH_KEY: &str = "search";
