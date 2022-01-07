@@ -1,7 +1,7 @@
 src/main.rs
 src/config.rs
 src/application.rs
-src/application/actions.rs
+src/application/actions.rs # TODO
 src/main_window.rs
 src/html_form.rs
 src/options_form.rs
@@ -16,14 +16,9 @@ st.sh
 deploy.sh
 deploy.bat
 
-# NOTE
-# For each word:
-#   If the word is a number matching [0-9]+ then search for this number
-#   twice, once as a decimal and once as hexadecimal; e.g., '97' → 97
-#   and 151 (U+0097).
-#   ElseIf the word matches [0-9a-fA-F]+ search for this both as a word
-#   and as a hexadecimal number; e.g., 'beef' → 'beef' and 48879
-#   (U+BEEF).
-#   Else search for the word as-is.
+preprocessunidata.py
+
+# Unicode data:
+# https://www.unicode.org/Public/UCD/latest/ucd/UnicodeData.txt
 
 # vim: syn=yaml

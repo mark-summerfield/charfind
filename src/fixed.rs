@@ -7,6 +7,7 @@ use std::env;
 
 pub static APPNAME: &str = "CharFind";
 pub static VERSION: &str = "0.1.0";
+pub static CHARDATA: &[u8] = include_bytes!("../chardata.txt.gz");
 pub const ICON: &str = include_str!("../images/charfind.svg");
 pub const HISTORY_SIZE: usize = 9;
 pub const PAD: i32 = 6;
@@ -18,7 +19,6 @@ pub const BUTTON_WIDTH: i32 = 70;
 pub const SCALE_MIN: f32 = 0.5;
 pub const SCALE_MAX: f32 = 3.5;
 pub const TABLE_ROWS: i32 = 200;
-pub const MESSAGE_DELAY: f64 = 10.0; // seconds
 
 #[derive(Copy, Clone, Debug)]
 pub enum Action {

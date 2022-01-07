@@ -40,8 +40,8 @@ pub fn make(sender: fltk::app::Sender<Action>) -> Widgets {
     let (find_combo, all_radio, any_radio, top_row) =
         add_top_row(sender, width);
     vbox.set_size(&top_row, ROW_HEIGHT);
-    let (table, middle_row) = add_middle_row(sender, width);
-    let (copy_input, mut bottom_row) = add_bottom_row(sender, width);
+    let table = add_middle_row(sender, width);
+    let (copy_input, bottom_row) = add_bottom_row(sender, width);
     vbox.set_size(&bottom_row, ROW_HEIGHT);
     vbox.end();
     main_window.end();
@@ -118,7 +118,7 @@ fn initialize_find_combo(find_combo: &mut fltk::misc::InputChoice) {
 fn add_middle_row(
     sender: fltk::app::Sender<Action>,
     width: i32,
-) -> (fltk_table::SmartTable, fltk::group::Flex) {
+) -> fltk_table::SmartTable {
     let mut row = fltk::group::Flex::default()
         .with_size(width, ROW_HEIGHT)
         .with_type(fltk::group::FlexType::Row);
@@ -138,7 +138,7 @@ fn add_middle_row(
     let column = add_copy_buttons(sender);
     row.set_size(&column, BUTTON_WIDTH * 2);
     row.end();
-    (table, row)
+    table
 }
 
 fn add_copy_buttons(

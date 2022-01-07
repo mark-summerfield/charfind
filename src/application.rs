@@ -7,7 +7,6 @@ use crate::fixed::Action;
 use crate::html_form;
 use crate::main_window;
 use fltk::prelude::*;
-use fltk_table::SmartTable;
 
 pub struct Application {
     app: fltk::app::App,
@@ -18,6 +17,7 @@ pub struct Application {
     table: fltk_table::SmartTable,
     copy_input: fltk::input::Input,
     help_form: Option<html_form::Form>,
+    chardata: Option<String>,
     receiver: fltk::app::Receiver<Action>,
 }
 
@@ -38,6 +38,7 @@ impl Application {
             table: widgets.table,
             copy_input: widgets.copy_input,
             help_form: None,
+            chardata: None,
             receiver,
         }
     }
