@@ -54,8 +54,7 @@ dependencies = [
  "chrono",
  "dirs",
  "flate2",
- "fltk 1.2.26 (git+https://github.com/fltk-rs/fltk-rs)",
- "fltk-table",
+ "fltk",
  "num",
  "rust-ini",
  "rustc_version_runtime",
@@ -157,33 +156,12 @@ dependencies = [
 [[package]]
 name = "fltk"
 version = "1.2.26"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2894b854989432cd0b13b48eb77178eb897f70b2aa5ef064575df226139ff668"
-dependencies = [
- "bitflags",
- "crossbeam-channel",
- "fltk-sys 1.2.26 (registry+https://github.com/rust-lang/crates.io-index)",
- "paste",
-]
-
-[[package]]
-name = "fltk"
-version = "1.2.26"
 source = "git+https://github.com/fltk-rs/fltk-rs#204b4de86882005c09a7122b9ed4408a640c2baa"
 dependencies = [
  "bitflags",
  "crossbeam-channel",
- "fltk-sys 1.2.26 (git+https://github.com/fltk-rs/fltk-rs)",
+ "fltk-sys",
  "paste",
-]
-
-[[package]]
-name = "fltk-sys"
-version = "1.2.26"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4cd352c677ae3a1cd20235368825cc6887847e502a753d01799ff2878d0950c9"
-dependencies = [
- "cmake",
 ]
 
 [[package]]
@@ -192,15 +170,6 @@ version = "1.2.26"
 source = "git+https://github.com/fltk-rs/fltk-rs#204b4de86882005c09a7122b9ed4408a640c2baa"
 dependencies = [
  "cmake",
-]
-
-[[package]]
-name = "fltk-table"
-version = "0.1.8"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d80f84c10d13aeaafabf3469a9013e1b4f80312ff28575860f2c327f06c967de"
-dependencies = [
- "fltk 1.2.26 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]

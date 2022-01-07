@@ -18,7 +18,6 @@ pub const BUTTON_HEIGHT: i32 = 30;
 pub const BUTTON_WIDTH: i32 = 70;
 pub const SCALE_MIN: f32 = 0.5;
 pub const SCALE_MAX: f32 = 3.5;
-pub const TABLE_ROWS: i32 = 200;
 
 #[derive(Copy, Clone, Debug)]
 pub enum Action {

@@ -20,12 +20,13 @@ impl Application {
         if words.is_empty() {
             return; // nothing to search for
         }
-        // TODO clear the table
+        self.browser.clear();
         let match_all = self.all_radio.is_toggled();
         let (cp1, cp2) = self.get_code_points(&words);
         self.maybe_populate_chardata();
         let mut found = false;
         if let Some(chardata) = &self.chardata {
+            let mut n = 1;
             for line in chardata.lines() {
                 let (cp, desc, keywords) = self.get_unicode_data(&line);
                 let matched = if cp != 0 && (cp == cp1 || cp == cp2) {
@@ -38,13 +39,20 @@ impl Application {
                 if matched {
                     found = true;
                     if let Some(c) = char::from_u32(cp) {
-                        // TODO add row to the table
-                        println!(
-                            "match cp={} char={} desc={}",
-                            cp, c, desc
+                        n += 1;
+                        self.browser.insert(
+                            n,
+                            &format!("@t{}\t{:04X}\t{}", c, cp, desc),
                         );
                     }
                 }
+            }
+            n -= 1;
+            if n > 0 {
+                self.browser.insert(
+                    1,
+                    &format!("@t@bChar\tU+…\tDescription ({} matches)", n),
+                );
             }
         }
         if found {

@@ -4,18 +4,17 @@
 use super::CONFIG;
 use crate::fixed::{
     Action, APPNAME, BUTTON_HEIGHT, BUTTON_WIDTH, HISTORY_SIZE, ICON, PAD,
-    ROW_HEIGHT, TABLE_ROWS, WINDOW_HEIGHT_MIN, WINDOW_WIDTH_MIN,
+    ROW_HEIGHT, WINDOW_HEIGHT_MIN, WINDOW_WIDTH_MIN,
 };
 use crate::util;
 use fltk::prelude::*;
-use fltk_table::{SmartTable, TableOpts};
 
 pub struct Widgets {
     pub main_window: fltk::window::Window,
     pub find_combo: fltk::misc::InputChoice,
     pub all_radio: fltk::button::RadioRoundButton,
     pub any_radio: fltk::button::RadioRoundButton,
-    pub table: fltk_table::SmartTable,
+    pub browser: fltk::browser::HoldBrowser,
     pub copy_input: fltk::input::Input,
 }
 
@@ -40,7 +39,7 @@ pub fn make(sender: fltk::app::Sender<Action>) -> Widgets {
     let (find_combo, all_radio, any_radio, top_row) =
         add_top_row(sender, width);
     vbox.set_size(&top_row, ROW_HEIGHT);
-    let table = add_middle_row(sender, width);
+    let browser = add_middle_row(sender, width);
     let (copy_input, bottom_row) = add_bottom_row(sender, width);
     vbox.set_size(&bottom_row, ROW_HEIGHT);
     vbox.end();
@@ -50,7 +49,7 @@ pub fn make(sender: fltk::app::Sender<Action>) -> Widgets {
         find_combo,
         all_radio,
         any_radio,
-        table,
+        browser,
         copy_input,
     }
 }
@@ -118,27 +117,21 @@ fn initialize_find_combo(find_combo: &mut fltk::misc::InputChoice) {
 fn add_middle_row(
     sender: fltk::app::Sender<Action>,
     width: i32,
-) -> fltk_table::SmartTable {
+) -> fltk::browser::HoldBrowser {
     let mut row = fltk::group::Flex::default()
         .with_size(width, ROW_HEIGHT)
         .with_type(fltk::group::FlexType::Row);
     row.set_margin(PAD);
-    let mut table = SmartTable::default().with_opts(TableOpts {
-        rows: TABLE_ROWS,
-        cols: 3,
-        editable: false,
-        ..Default::default()
-    });
-    table.set_col_header_value(0, "Char");
-    table.set_col_header_value(1, "U+HHHH");
-    table.set_col_header_value(2, "Description");
-    for i in 0..TABLE_ROWS {
-        table.set_row_header_value(i, &(i + 1).to_string());
-    }
+    let mut browser = fltk::browser::HoldBrowser::default();
+    let small_width = (width / 6).max(BUTTON_WIDTH);
+    // TODO this works in the example but not here!
+    //let widths = &[small_width, small_width, width - 2 * small_width];
+    //browser.set_column_widths(widths);
+    browser.set_column_char('\t');
     let column = add_copy_buttons(sender);
     row.set_size(&column, BUTTON_WIDTH * 2);
     row.end();
-    table
+    browser
 }
 
 fn add_copy_buttons(

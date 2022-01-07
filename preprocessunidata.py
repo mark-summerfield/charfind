@@ -22,6 +22,8 @@ def main():
                 if parts[1] == '<control>':
                     description = parts[10]
                     keywords.add('CONTROL')
+                elif parts[1].startswith('COMBINING'):
+                    continue
                 else:
                     description = parts[1]
                     keywords |= get_keywords(parts[10])
