@@ -42,16 +42,20 @@ impl Application {
                         n += 1;
                         self.browser.insert(
                             n,
-                            &format!("@t{}\t{:04X}\t{}", c, cp, desc),
+                            &format!("@t{}\t{:>6X}\t{}", c, cp, desc),
                         );
                     }
                 }
             }
             n -= 1;
             if n > 0 {
+                let s = if n > 1 { "es" } else { "" };
                 self.browser.insert(
                     1,
-                    &format!("@t@bChar\tU+…\tDescription ({} matches)", n),
+                    &format!(
+                        "@t@bChar\tU+…\tDescription ({} match{})",
+                        n, s
+                    ),
                 );
             }
         }

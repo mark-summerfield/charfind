@@ -123,10 +123,6 @@ fn add_middle_row(
         .with_type(fltk::group::FlexType::Row);
     row.set_margin(PAD);
     let mut browser = fltk::browser::HoldBrowser::default();
-    let small_width = (width / 6).max(BUTTON_WIDTH);
-    // TODO this works in the example but not here!
-    //let widths = &[small_width, small_width, width - 2 * small_width];
-    //browser.set_column_widths(widths);
     browser.set_column_char('\t');
     let column = add_copy_buttons(sender);
     row.set_size(&column, BUTTON_WIDTH * 2);
@@ -169,7 +165,7 @@ fn add_bottom_row(
     sender: fltk::app::Sender<Action>,
     width: i32,
 ) -> (fltk::input::Input, fltk::group::Flex) {
-    // TODO tooltips to button & radio buttons
+    // TODO tooltips to buttons
     let mut row = fltk::group::Flex::default()
         .with_size(width, ROW_HEIGHT)
         .with_type(fltk::group::FlexType::Row);
