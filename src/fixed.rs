@@ -1,4 +1,4 @@
-// Copyright © 2021 Mark Summerfield. All rights reserved.
+// Copyright © 2021-22 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
 use crate::util::capitalize_first;
@@ -10,8 +10,8 @@ pub static VERSION: &str = "0.1.0";
 pub const ICON: &str = include_str!("../images/charfind.svg");
 pub const HISTORY_SIZE: usize = 9;
 pub const PAD: i32 = 6;
-pub const WINDOW_WIDTH_MIN: i32 = 660;
-pub const WINDOW_HEIGHT_MIN: i32 = 490;
+pub const WINDOW_WIDTH_MIN: i32 = 600;
+pub const WINDOW_HEIGHT_MIN: i32 = 460;
 pub const ROW_HEIGHT: i32 = 40;
 pub const BUTTON_HEIGHT: i32 = 30;
 pub const BUTTON_WIDTH: i32 = 70;
@@ -35,7 +35,7 @@ pub enum Action {
 pub fn about_html() -> String {
     let year = Local::today().year();
     let year = if year == 2021 {
-        format!("{}", year)
+        year.to_string()
     } else {
         format!("2021-{}", year - 2000)
     };

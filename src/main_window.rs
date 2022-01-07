@@ -1,4 +1,4 @@
-// Copyright © 2021 Mark Summerfield. All rights reserved.
+// Copyright © 2021-22 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
 use super::CONFIG;
@@ -17,7 +17,6 @@ pub struct Widgets {
     pub any_radio: fltk::button::RadioRoundButton,
     pub table: fltk_table::SmartTable,
     pub copy_input: fltk::input::Input,
-    pub status_bar: fltk::frame::Frame,
 }
 
 pub fn make(sender: fltk::app::Sender<Action>) -> Widgets {
@@ -44,7 +43,6 @@ pub fn make(sender: fltk::app::Sender<Action>) -> Widgets {
     let (table, middle_row) = add_middle_row(sender, width);
     let (copy_input, mut bottom_row) = add_bottom_row(sender, width);
     vbox.set_size(&bottom_row, ROW_HEIGHT);
-    let status_bar = add_status_bar(&mut vbox, width);
     vbox.end();
     main_window.end();
     Widgets {
@@ -54,7 +52,6 @@ pub fn make(sender: fltk::app::Sender<Action>) -> Widgets {
         any_radio,
         table,
         copy_input,
-        status_bar,
     }
 }
 
@@ -220,20 +217,6 @@ fn add_bottom_row(
     row.set_size(&quit_button, width);
     row.end();
     (copy_input, row)
-}
-
-fn add_status_bar(
-    vbox: &mut fltk::group::Flex,
-    width: i32,
-) -> fltk::frame::Frame {
-    let mut status_row = fltk::group::Flex::default()
-        .with_size(width, BUTTON_HEIGHT)
-        .with_type(fltk::group::FlexType::Row);
-    let mut status_bar = fltk::frame::Frame::default();
-    status_bar.set_frame(fltk::enums::FrameType::EngravedFrame);
-    status_row.end();
-    vbox.set_size(&status_row, BUTTON_HEIGHT);
-    status_bar
 }
 
 fn get_config_window_rect() -> (i32, i32, i32, i32) {

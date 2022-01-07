@@ -1,4 +1,4 @@
-// Copyright © 2021 Mark Summerfield. All rights reserved.
+// Copyright © 2021-22 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
 use super::CONFIG;
@@ -9,13 +9,24 @@ use crate::Application;
 use fltk::prelude::*;
 
 impl Application {
+    pub(crate) fn on_search(&mut self) {
+        println!("on_search"); // TODO
+    }
+
+    pub(crate) fn on_copy(&mut self) {
+        println!("on_copy"); // TODO copy copy_input to clipboard
+    }
+
+    pub(crate) fn on_add_char(&mut self, c: char) {
+        println!("on_add_char({})", c); // TODO // add to copy_input
+    }
+
+    pub(crate) fn on_add_from_table(&mut self) {
+        println!("on_add_from_table"); // TODO // add to copy_input
+    }
+
     pub(crate) fn on_options(&mut self) {
-        let form = options_form::Form::default();
-        if *form.ok.borrow() {
-            self.set_status("options OK", Some(MESSAGE_DELAY));
-        } else {
-            self.clear_status();
-        }
+        options_form::Form::default();
     }
 
     pub(crate) fn on_about(&mut self) {
@@ -34,6 +45,7 @@ impl Application {
 
     pub(crate) fn on_quit(&mut self) {
         let config = CONFIG.get().read().unwrap();
+        // TODO save history & searches not here but AS WE GO!
         config.save(
             self.main_window.x(),
             self.main_window.y(),
