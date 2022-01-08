@@ -25,6 +25,7 @@ pub enum Action {
     Copy,
     AddChar(char),
     AddFromTable,
+    FocusToSearchResults,
     Options,
     About,
     Help,

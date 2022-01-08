@@ -11,56 +11,72 @@ use fltk::prelude::*;
 use std::collections::HashSet;
 use std::io::prelude::*;
 use std::iter::Iterator;
+use thousands::Separable;
 
 type WordSet = HashSet<String>;
 
 impl Application {
     pub(crate) fn on_search(&mut self) {
-        let words = self.get_search_words();
+        let (words, ignores) = self.get_search_words();
         if words.is_empty() {
             return; // nothing to search for
         }
         self.browser.clear();
-        let match_all = self.all_radio.is_toggled();
         let (cp1, cp2) = self.get_code_points(&words);
         self.maybe_populate_chardata();
-        let mut found = false;
+        let mut n = 1;
         if let Some(chardata) = &self.chardata {
-            let mut n = 1;
             for line in chardata.lines() {
                 let (cp, desc, keywords) = self.get_unicode_data(&line);
-                let matched = if cp != 0 && (cp == cp1 || cp == cp2) {
-                    true
-                } else if match_all {
-                    words.intersection(&keywords).count() == words.len()
-                } else {
-                    words.intersection(&keywords).count() > 0
-                };
-                if matched {
-                    found = true;
+                if self.is_match(cp, cp1, cp2, &words, &keywords)
+                    && ignores.intersection(&keywords).count() == 0
+                {
                     if let Some(c) = char::from_u32(cp) {
                         n += 1;
+                        let bg = if n % 2 == 0 { "@B247" } else { "" };
+                        let cp = string_for_codepoint(cp);
                         self.browser.insert(
                             n,
-                            &format!("@t{}\t{:>6X}\t{}", c, cp, desc),
+                            &format!("{}@t{}\t{}\t{}", bg, c, cp, desc),
                         );
                     }
                 }
             }
-            n -= 1;
-            if n > 0 {
-                let s = if n > 1 { "es" } else { "" };
-                self.browser.insert(
-                    1,
-                    &format!(
-                        "@t@bChar\tU+…\tDescription ({} match{})",
-                        n, s
-                    ),
-                );
-            }
         }
-        if found {
+        self.add_header_line(n - 1);
+    }
+
+    fn is_match(
+        &self,
+        cp: u32,
+        cp1: u32,
+        cp2: u32,
+        words: &WordSet,
+        keywords: &WordSet,
+    ) -> bool {
+        if cp != 0 && (cp == cp1 || cp == cp2) {
+            true
+        } else if self.all_radio.is_toggled() {
+            words.intersection(&keywords).count() == words.len()
+        } else {
+            words.intersection(&keywords).count() > 0
+        }
+    }
+
+    fn add_header_line(&mut self, n: i32) {
+        if n > 0 {
+            let s = if n > 1 { "es" } else { "" };
+            self.browser.insert(
+                1,
+                &format!(
+                    "@C7@B136@t@bChar\tU+HHHH\tDescription ({} match{})",
+                    n.separate_with_commas(),
+                    s
+                ),
+            );
             self.update_searches();
+        } else {
+            self.browser.insert(1, "@B3@C1No matches found");
         }
     }
 
@@ -74,14 +90,20 @@ impl Application {
         }
     }
 
-    fn get_search_words(&self) -> WordSet {
-        match self.find_combo.value() {
-            None => WordSet::new(),
-            Some(words) => words
-                .to_uppercase()
-                .split_whitespace()
-                .map(|s| s.to_owned())
-                .collect(),
+    fn get_search_words(&self) -> (WordSet, WordSet) {
+        if let Some(line) = self.find_combo.value() {
+            let mut words = WordSet::new();
+            let mut ignores = WordSet::new();
+            for word in line.split_whitespace() {
+                if word.starts_with('-') {
+                    ignores.insert(word[1..].to_uppercase()); // Safe ASCII
+                } else {
+                    words.insert(word.to_uppercase());
+                }
+            }
+            (words, ignores)
+        } else {
+            (WordSet::new(), WordSet::new())
         }
     }
 
@@ -119,6 +141,7 @@ impl Application {
     }
 
     fn update_searches(&mut self) {
+        println!("update_searches");
         // TODO add the find_combo's value() to config searches
         // 1. first ripple down HISTORY_SIZE -2 → HISTORY_SIZE -1,
         // HISTORY_SIZE -3 → HISTORY_SIZE -2 ...
@@ -167,5 +190,13 @@ impl Application {
             self.main_window.height(),
         );
         self.app.quit();
+    }
+}
+
+fn string_for_codepoint(cp: u32) -> String {
+    if cp <= 0xFFFF {
+        format!("  {:04X}", cp)
+    } else {
+        format!("{:>6X}", cp)
     }
 }

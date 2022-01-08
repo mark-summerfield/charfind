@@ -20,18 +20,7 @@ pub struct Widgets {
 
 pub fn make(sender: fltk::app::Sender<Action>) -> Widgets {
     fltk::window::Window::set_default_xclass(APPNAME);
-    let icon = fltk::image::SvgImage::from_data(ICON).unwrap();
-    let (x, y, width, height) = get_config_window_rect();
-    let mut main_window =
-        fltk::window::Window::new(x, y, width, height, APPNAME);
-    main_window.set_icon(Some(icon));
-    main_window.size_range(
-        WINDOW_WIDTH_MIN,
-        WINDOW_HEIGHT_MIN,
-        i32::MAX,
-        i32::MAX,
-    );
-    main_window.make_resizable(true);
+    let (main_window, width) = make_main_window();
     let mut vbox = fltk::group::Flex::default()
         .size_of_parent()
         .with_type(fltk::group::FlexType::Column);
@@ -52,6 +41,22 @@ pub fn make(sender: fltk::app::Sender<Action>) -> Widgets {
         browser,
         copy_input,
     }
+}
+
+fn make_main_window() -> (fltk::window::Window, i32) {
+    let icon = fltk::image::SvgImage::from_data(ICON).unwrap();
+    let (x, y, width, height) = get_config_window_rect();
+    let mut main_window =
+        fltk::window::Window::new(x, y, width, height, APPNAME);
+    main_window.set_icon(Some(icon));
+    main_window.size_range(
+        WINDOW_WIDTH_MIN,
+        WINDOW_HEIGHT_MIN,
+        i32::MAX,
+        i32::MAX,
+    );
+    main_window.make_resizable(true);
+    (main_window, width)
 }
 
 fn add_top_row(
@@ -75,7 +80,7 @@ fn add_top_row(
     find_label
         .set_align(fltk::enums::Align::Inside | fltk::enums::Align::Right);
     let mut find_combo = fltk::misc::InputChoice::default();
-    initialize_find_combo(&mut find_combo);
+    initialize_find_combo(&mut find_combo, sender);
     find_label.set_callback({
         let mut find_combo = find_combo.clone();
         move |_| {
@@ -107,7 +112,24 @@ fn add_top_row(
     (find_combo, all_radio, any_radio, row)
 }
 
-fn initialize_find_combo(find_combo: &mut fltk::misc::InputChoice) {
+fn initialize_find_combo(
+    find_combo: &mut fltk::misc::InputChoice,
+    sender: fltk::app::Sender<Action>,
+) {
+    find_combo.handle(move |find_combo, event| match event {
+        fltk::enums::Event::KeyUp => match fltk::app::event_key() {
+            fltk::enums::Key::Enter => {
+                sender.send(Action::Search);
+                true
+            }
+            fltk::enums::Key::F2 => {
+                find_combo.menu_button().popup();
+                true
+            }
+            _ => false,
+        },
+        _ => false,
+    });
     let config = CONFIG.get().read().unwrap();
     for i in 0..HISTORY_SIZE {
         find_combo.add(&config.searches[i]);
@@ -245,6 +267,10 @@ pub fn add_event_handlers(
         fltk::enums::Event::KeyUp => match fltk::app::event_key() {
             fltk::enums::Key::Help | fltk::enums::Key::F1 => {
                 sender.send(Action::Help);
+                true
+            }
+            fltk::enums::Key::F3 => {
+                sender.send(Action::FocusToSearchResults);
                 true
             }
             _ => false,

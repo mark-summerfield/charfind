@@ -98,9 +98,9 @@ impl Default for Config {
                 "box".to_string(),
                 "euro".to_string(),
                 "fraction".to_string(),
-                "geometric".to_string(),
-                "greek symbol".to_string(),
-                "technical".to_string(),
+                "sign".to_string(),
+                "symbol greek".to_string(),
+                "symbol -greek".to_string(),
             ],
             history: ['•', '…', '—', '€', '£', '←', '→', '↑', '↓'],
         }

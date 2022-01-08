@@ -22,14 +22,15 @@ def main():
                 if parts[1] == '<control>':
                     description = parts[10]
                     keywords.add('CONTROL')
-                elif parts[1].startswith('COMBINING'):
-                    continue
                 else:
                     description = parts[1]
                     keywords |= get_keywords(parts[10])
                 if description.lstrip().startswith('<'):
                     continue
                 keywords |= get_keywords(description)
+                if keywords & {'ACCENT', 'COMBINING', 'MODIFIER',
+                               'PRIVATE', 'VARIATION'}:
+                    continue
                 keywords = '\f'.join(sorted(keywords))
                 outfile.write(f'{codepoint}\t{description}\t{keywords}\n')
     print('wrote', OUTFILE)
@@ -38,13 +39,11 @@ def main():
 def get_keywords(part):
     words = set()
     for word in part.split():
-        if len(word) < 3:
-            continue
         word = word.strip(STRIP_CHARS)
         words.add(word)
         if word == 'MATHEMATICAL':
             words |= {'MATH', 'MATHS'}
-    words.discard('WITH')
+    words -= {'WITH', 'OF'}
     return words
 
 

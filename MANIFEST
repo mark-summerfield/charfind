@@ -1,8 +1,14 @@
+# TODO save each new search (searches)
+# TODO implement Add buttons
+# TODO save each Add char (history)
+# TODO implement Copy (to clipboard) button
+# TODO write new help text (including -ignores)
+
 src/main.rs
 src/config.rs
 src/application.rs
-src/application/actions.rs # TODO use bg &/or fg colors
-src/main_window.rs # TODO column widths for browser
+src/application/actions.rs
+src/main_window.rs
 src/html_form.rs
 src/options_form.rs
 src/fixed.rs # VERSION

@@ -51,6 +51,9 @@ impl Application {
                     Action::Copy => self.on_copy(),
                     Action::AddChar(c) => self.on_add_char(c),
                     Action::AddFromTable => self.on_add_from_table(),
+                    Action::FocusToSearchResults => {
+                        self.browser.take_focus().unwrap()
+                    }
                     Action::Options => self.on_options(),
                     Action::About => self.on_about(),
                     Action::Help => self.on_help(),
