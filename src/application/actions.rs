@@ -27,7 +27,7 @@ impl Application {
         let mut n = 1;
         if let Some(chardata) = &self.chardata {
             for line in chardata.lines() {
-                let (cp, desc, keywords) = self.get_unicode_data(&line);
+                let (cp, desc, keywords) = self.get_unicode_data(line);
                 if self.is_match(cp, cp1, cp2, &words, &keywords)
                     && ignores.intersection(&keywords).count() == 0
                 {
@@ -57,9 +57,9 @@ impl Application {
         if cp != 0 && (cp == cp1 || cp == cp2) {
             true
         } else if self.all_radio.is_toggled() {
-            words.intersection(&keywords).count() == words.len()
+            words.intersection(keywords).count() == words.len()
         } else {
-            words.intersection(&keywords).count() > 0
+            words.intersection(keywords).count() > 0
         }
     }
 
@@ -95,8 +95,8 @@ impl Application {
             let mut words = WordSet::new();
             let mut ignores = WordSet::new();
             for word in line.split_whitespace() {
-                if word.starts_with('-') {
-                    ignores.insert(word[1..].to_uppercase()); // Safe ASCII
+                if let Some(word) = word.strip_prefix('-') {
+                    ignores.insert(word.to_uppercase());
                 } else {
                     words.insert(word.to_uppercase());
                 }
@@ -111,17 +111,11 @@ impl Application {
         let mut cp1 = 0;
         let mut cp2 = 0;
         for word in words {
-            match word.parse::<u32>() {
-                Ok(cp) => {
-                    cp1 = cp;
-                }
-                Err(_) => (),
+            if let Ok(cp) = word.parse::<u32>() {
+                cp1 = cp;
             }
-            match u32::from_str_radix(&word, 16) {
-                Ok(cp) => {
-                    cp2 = cp;
-                }
-                Err(_) => (),
+            if let Ok(cp) = u32::from_str_radix(word, 16) {
+                cp2 = cp;
             }
             if cp1 != 0 && cp2 != 0 {
                 break;
