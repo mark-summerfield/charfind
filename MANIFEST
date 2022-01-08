@@ -1,3 +1,13 @@
+# TODO
+# 1. git mv preprocessunidata.py preprocessunidata-txt.py
+# 2. cp preprocessunidata-txt.py preprocessunidata.py
+# 3. edit preprocessunidata.py to read:
+#       https://www.unicode.org/Public/UCD/latest/ucdxml/ucd.all.flat.zip
+#   In <char> cp is the codepoint, na is the description.
+#   In particular, include _all_ the <name-alias> abbreviations in the
+#   keywords _and_ the <char> blk (block) in the keywords. For the
+#   block, split on '_'.
+
 # TODO save each new search (searches)
 # TODO implement Add buttons
 # TODO save each Add char (history)
@@ -24,7 +34,5 @@ deploy.bat
 
 preprocessunidata.py
 
-# Unicode data:
-# https://www.unicode.org/Public/UCD/latest/ucd/UnicodeData.txt
 
 # vim: syn=yaml

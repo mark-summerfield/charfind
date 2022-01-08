@@ -2,6 +2,9 @@
 # Copyright © 2022 Mark Summerfield. All rights reserved.
 # License: GPLv3
 
+# Unicode data:
+# https://www.unicode.org/Public/UCD/latest/ucd/UnicodeData.txt
+
 import gzip
 import string
 
