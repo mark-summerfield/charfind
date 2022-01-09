@@ -5,6 +5,7 @@ use super::CONFIG;
 use crate::fixed::{about_html, CHARDATA, HELP_HTML};
 use crate::html_form;
 use crate::options_form;
+use crate::util;
 use crate::Application;
 use flate2::read::GzDecoder;
 use fltk::prelude::*;
@@ -135,13 +136,15 @@ impl Application {
     }
 
     fn update_searches(&mut self) {
-        println!("update_searches");
-        // TODO add the find_combo's value() to config searches
-        // 1. first ripple down HISTORY_SIZE -2 → HISTORY_SIZE -1,
-        // HISTORY_SIZE -3 → HISTORY_SIZE -2 ...
-        // 2. then add the value as the new first entry
-        // 3. update find_combo's list
-        // 4. refactor into
+        if let Some(line) = self.find_combo.value() {
+            if util::add_to_searches(&line) {
+                self.find_combo.clear();
+                let config = CONFIG.get().read().unwrap();
+                for s in &config.searches {
+                    self.find_combo.add(&s);
+                }
+            }
+        }
     }
 
     pub(crate) fn on_copy(&mut self) {
@@ -155,6 +158,7 @@ impl Application {
     pub(crate) fn on_add_from_table(&mut self) {
         println!("on_add_from_table"); // TODO // add to copy_input
     }
+
 
     pub(crate) fn on_options(&mut self) {
         options_form::Form::default();

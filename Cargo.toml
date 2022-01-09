@@ -16,8 +16,9 @@ license = "GPL-3.0"
 status = "passively-maintained"
 
 [profile.release]
+opt-level = "z"
+lto = true
 codegen-units = 1
-# lto = "fat" # TODO
 
 [dependencies]
 chrono = "^0.4"

@@ -9,6 +9,7 @@ pub static APPNAME: &str = "CharFind";
 pub static VERSION: &str = "0.1.0";
 pub static CHARDATA: &[u8] = include_bytes!("../chardata.txt.gz");
 pub const ICON: &str = include_str!("../images/charfind.svg");
+pub const SEARCHES_SIZE: usize = 24;
 pub const HISTORY_SIZE: usize = 9;
 pub const PAD: i32 = 6;
 pub const WINDOW_WIDTH_MIN: i32 = 600;

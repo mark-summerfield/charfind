@@ -2,10 +2,12 @@
 // License: GPLv3
 
 use crate::fixed::{
-    APPNAME, HISTORY_SIZE, SCALE_MAX, SCALE_MIN, WINDOW_HEIGHT_MIN,
-    WINDOW_WIDTH_MIN,
+    APPNAME, HISTORY_SIZE, SCALE_MAX, SCALE_MIN, SEARCHES_SIZE,
+    WINDOW_HEIGHT_MIN, WINDOW_WIDTH_MIN
 };
 use crate::util;
+use std::collections::VecDeque;
+use std::iter::Iterator;
 
 #[derive(Clone, Debug)]
 pub struct Config {
@@ -15,8 +17,8 @@ pub struct Config {
     pub window_width: i32,
     pub window_scale: f32,
     pub filename: std::path::PathBuf,
-    pub searches: [String; HISTORY_SIZE],
-    pub history: [char; HISTORY_SIZE],
+    pub searches: VecDeque<String>,
+    pub history: VecDeque<char>,
 }
 
 impl Config {
@@ -62,17 +64,16 @@ impl Config {
 
     fn history_str(&self) -> String {
         let mut history = String::new();
-        for i in 0..HISTORY_SIZE {
-            history.push(self.history[i]);
+        for c in self.history.iter() {
+            history.push(*c);
         }
         history
     }
 
     fn save_searches(&self, ini: &mut ini::Ini) {
-        for i in 0..HISTORY_SIZE {
+        for (i, s) in self.searches.iter().enumerate() {
             let key = format!("{}{}", SEARCH_KEY, i + 1);
-            ini.with_section(Some(GENERAL_SECTION))
-                .set(key, self.searches[i].clone());
+            ini.with_section(Some(GENERAL_SECTION)).set(key, s.clone());
         }
     }
 
@@ -81,6 +82,11 @@ impl Config {
         fltk::dialog::message(util::x() - 200, util::y() - 100, message);
     }
 }
+
+static DEFAULT_SEARCHES: [&str; 6] = ["arrow", "asterisk", "block", "box",
+                                      "symbol greek", "symbol -greek"];
+const DEFAULT_HISTORY: [char; 9] = ['•', '…', '—', '€', '£', '←', '→', '↑',
+                                    '↓'];
 
 impl Default for Config {
     fn default() -> Self {
@@ -91,18 +97,8 @@ impl Default for Config {
             window_width: WINDOW_WIDTH_MIN,
             window_scale: 1.0,
             filename: std::path::PathBuf::new(),
-            searches: [
-                "arrow".to_string(),
-                "asterisk".to_string(),
-                "block".to_string(),
-                "box".to_string(),
-                "euro".to_string(),
-                "fraction".to_string(),
-                "sign".to_string(),
-                "symbol greek".to_string(),
-                "symbol -greek".to_string(),
-            ],
-            history: ['•', '…', '—', '€', '£', '←', '→', '↑', '↓'],
+            searches: VecDeque::from(DEFAULT_SEARCHES.map(|s| s.to_string())),
+            history: VecDeque::from(DEFAULT_HISTORY),
         }
     }
 }
@@ -157,14 +153,35 @@ fn read_general_properties(
     config: &mut Config,
 ) {
     if let Some(value) = properties.get(HISTORY_KEY) {
-        for (i, c) in value.chars().enumerate() {
-            config.history[i] = c;
+        if !value.is_empty() {
+            config.history.clear();
+            for c in value.chars().chain(DEFAULT_HISTORY) {
+                if !config.history.contains(&c) {
+                    config.history.push_front(c);
+                }
+            }
+            config.history.truncate(HISTORY_SIZE);
         }
     }
-    for i in 0..HISTORY_SIZE {
-        let key = format!("{}{}", SEARCH_KEY, i + 1);
+    config.searches.clear();
+    for i in 1..=SEARCHES_SIZE {
+        let key = format!("{}{}", SEARCH_KEY, i);
         if let Some(value) = properties.get(&key) {
-            config.searches[i] = value.to_string();
+            let value = value.to_string();
+            if !config.searches.contains(&value) {
+                config.searches.push_back(value);
+            }
+        }
+    }
+    if config.searches.len() < SEARCHES_SIZE {
+        for s in DEFAULT_SEARCHES.iter() {
+            let value = s.to_string();
+            if !config.searches.contains(&value) {
+                config.searches.push_back(value);
+            }
+            if config.searches.len() == SEARCHES_SIZE {
+                break;
+            }
         }
     }
 }

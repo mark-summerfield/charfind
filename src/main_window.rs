@@ -3,7 +3,7 @@
 
 use super::CONFIG;
 use crate::fixed::{
-    Action, APPNAME, BUTTON_HEIGHT, BUTTON_WIDTH, HISTORY_SIZE, ICON, PAD,
+    Action, APPNAME, BUTTON_HEIGHT, BUTTON_WIDTH, ICON, PAD,
     ROW_HEIGHT, WINDOW_HEIGHT_MIN, WINDOW_WIDTH_MIN,
 };
 use crate::util;
@@ -50,10 +50,10 @@ fn make_main_window() -> (fltk::window::Window, i32) {
         fltk::window::Window::new(x, y, width, height, APPNAME);
     main_window.set_icon(Some(icon));
     main_window.size_range(
-        WINDOW_WIDTH_MIN,
-        WINDOW_HEIGHT_MIN,
-        i32::MAX,
-        i32::MAX,
+         WINDOW_WIDTH_MIN,
+         WINDOW_HEIGHT_MIN,
+         fltk::app::screen_size().0 as i32,
+         fltk::app::screen_size().1 as i32,
     );
     main_window.make_resizable(true);
     (main_window, width)
@@ -89,6 +89,7 @@ fn add_top_row(
     });
     let mut search_button =
         fltk::button::Button::default().with_label("&Search");
+    search_button.visible_focus(false);
     search_button.set_callback(move |_| {
         sender.send(Action::Search);
     });
@@ -98,8 +99,10 @@ fn add_top_row(
     let mut all_radio =
         fltk::button::RadioRoundButton::default().with_label("A&ll Words");
     all_radio.set(true);
-    let any_radio =
+    all_radio.visible_focus(false);
+    let mut any_radio =
         fltk::button::RadioRoundButton::default().with_label("A&ny Words");
+    any_radio.visible_focus(false);
     let label_width = BUTTON_WIDTH - PAD;
     let radio_width = (BUTTON_WIDTH as f32 * 1.5) as i32;
     let width = (width / 6).max(radio_width).min(label_width);
@@ -116,23 +119,26 @@ fn initialize_find_combo(
     find_combo: &mut fltk::misc::InputChoice,
     sender: fltk::app::Sender<Action>,
 ) {
-    find_combo.handle(move |find_combo, event| match event {
-        fltk::enums::Event::KeyUp => match fltk::app::event_key() {
-            fltk::enums::Key::Enter => {
-                sender.send(Action::Search);
-                true
-            }
-            fltk::enums::Key::F2 => {
+    find_combo.menu_button().visible_focus(false);
+    find_combo.handle(move |find_combo, event| {
+        if !(find_combo.has_focus() || find_combo.input().has_focus()
+             || find_combo.menu_button().has_focus()) {
+            return false;
+        }
+        if event == fltk::enums::Event::KeyUp {
+            if fltk::app::event_key() == fltk::enums::Key::F2 {
                 find_combo.menu_button().popup();
-                true
+                return true;
             }
-            _ => false,
-        },
-        _ => false,
+            if find_combo.changed() {
+                sender.send(Action::Search);
+            }
+        }
+        false
     });
     let config = CONFIG.get().read().unwrap();
-    for i in 0..HISTORY_SIZE {
-        find_combo.add(&config.searches[i]);
+    for s in &config.searches {
+        find_combo.add(s);
     }
 }
 
@@ -146,6 +152,15 @@ fn add_middle_row(
     row.set_margin(PAD);
     let mut browser = fltk::browser::HoldBrowser::default();
     browser.set_column_char('\t');
+    browser.handle(move |browser, event| {
+        if browser.has_focus() && event == fltk::enums::Event::KeyUp
+                && fltk::app::event_key().bits() == 32 {
+            sender.send(Action::AddFromTable); // Space
+            true
+        } else {
+            false
+        }
+    });
     let column = add_copy_buttons(sender);
     row.set_size(&column, BUTTON_WIDTH * 2);
     row.end();
@@ -166,8 +181,8 @@ fn add_copy_buttons(
     });
     column.set_size(&button, BUTTON_HEIGHT);
     let config = CONFIG.get().read().unwrap();
-    for i in 0..HISTORY_SIZE {
-        let label = format!("&{} Add |{}|", i + 1, config.history[i]);
+    for (i, c) in config.history.iter().enumerate() {
+        let label = format!("&{} Add |{}|", i + 1, c);
         let mut button = fltk::button::Button::default().with_label(&label);
         button.visible_focus(false);
         button.set_callback(move |button| {
@@ -194,27 +209,32 @@ fn add_bottom_row(
     row.set_margin(PAD);
     let mut copy_button =
         fltk::button::Button::default().with_label("&Copy");
+    copy_button.visible_focus(false);
     copy_button.set_callback(move |_| {
         sender.send(Action::Copy);
     });
     let copy_input = fltk::input::Input::default();
     let mut options_button =
         fltk::button::Button::default().with_label("&Options");
+    options_button.visible_focus(false);
     options_button.set_callback(move |_| {
         sender.send(Action::Options);
     });
     let mut about_button =
         fltk::button::Button::default().with_label("&About");
+    about_button.visible_focus(false);
     about_button.set_callback(move |_| {
         sender.send(Action::About);
     });
     let mut help_button =
         fltk::button::Button::default().with_label("&Help");
+    help_button.visible_focus(false);
     help_button.set_callback(move |_| {
         sender.send(Action::Help);
     });
     let mut quit_button =
         fltk::button::Button::default().with_label("&Quit");
+    quit_button.visible_focus(false);
     quit_button.set_callback(move |_| {
         sender.send(Action::Quit);
     });

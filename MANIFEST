@@ -8,7 +8,7 @@
 #   keywords _and_ the <char> blk (block) in the keywords. For the
 #   block, split on '_'.
 
-# TODO save each new search (searches)
+# TODO when a table row is double-clicked send AddFromTable
 # TODO implement Add buttons
 # TODO save each Add char (history)
 # TODO implement Copy (to clipboard) button

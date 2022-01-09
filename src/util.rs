@@ -1,6 +1,8 @@
 // Copyright © 2021-22 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
+use super::CONFIG;
+use crate::fixed::{HISTORY_SIZE, SEARCHES_SIZE};
 use std::{cmp, fmt, str};
 
 pub fn x() -> i32 {
@@ -67,4 +69,37 @@ impl std::fmt::Display for Pos {
     fn fmt(&self, out: &mut std::fmt::Formatter) -> fmt::Result {
         write!(out, "({},{})", self.x, self.y)
     }
+}
+
+pub fn add_to_history(x: char) -> bool {
+    {
+        let config = CONFIG.get().read().unwrap();
+        if config.history.contains(&x) {
+            return false;
+        }
+    }
+    let mut config = CONFIG.get().write().unwrap();
+    config.history.push_front(x);
+    config.history.truncate(HISTORY_SIZE);
+    true
+}
+
+pub fn add_to_searches(x: &str) -> bool {
+    let x = x.to_string();
+    {
+        let config = CONFIG.get().read().unwrap();
+        if config.searches.contains(&x) {
+            return false;
+        }
+    }
+    let mut config = CONFIG.get().write().unwrap();
+    if let Some(front) = config.searches.front_mut() {
+        if x.starts_with(front.as_str()) {
+            *front = x;
+            return true;
+        }
+    }
+    config.searches.push_front(x);
+    config.searches.truncate(SEARCHES_SIZE);
+    true
 }
