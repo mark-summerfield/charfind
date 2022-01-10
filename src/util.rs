@@ -32,7 +32,6 @@ where
     }
 }
 
-
 pub fn isclose32(a: f32, b: f32) -> bool {
     (a..=(a + f32::EPSILON)).contains(&b)
 }
@@ -94,7 +93,9 @@ pub fn add_to_searches(x: &str) -> bool {
     }
     let mut config = CONFIG.get().write().unwrap();
     if let Some(front) = config.searches.front_mut() {
-        if x.starts_with(front.as_str()) {
+        if x.starts_with(front.as_str())
+            || levenshtein::levenshtein(&x, front.as_str()) < 2
+        {
             *front = x;
             return true;
         }

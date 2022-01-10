@@ -9,8 +9,8 @@ pub static APPNAME: &str = "CharFind";
 pub static VERSION: &str = "0.1.0";
 pub static CHARDATA: &[u8] = include_bytes!("../chardata.txt.gz");
 pub const ICON: &str = include_str!("../images/charfind.svg");
-pub const SEARCHES_SIZE: usize = 24;
-pub const HISTORY_SIZE: usize = 9;
+pub const SEARCHES_SIZE: usize = 20;
+pub const HISTORY_SIZE: usize = 26;
 pub const PAD: i32 = 6;
 pub const WINDOW_WIDTH_MIN: i32 = 600;
 pub const WINDOW_HEIGHT_MIN: i32 = 460;
@@ -65,6 +65,18 @@ Rust {} • fltk-rs {} • FLTK {} • {}/{}
         env::consts::ARCH
     )
 }
+
+// NOTE
+// The Find text consists of one or more required words, plain words,
+// unwanted words, and code points.
+// For example: +left math symbol -greek 2026
+// This means match any characters whose description contains left and math
+// or symbol (or both) but not greek, or any character whose code point is
+// either 2026 decimal or U+07EA (0x07EA is 2026 decimal).
+// In general it should work as expected: use +words for required, plain
+// words for optional (but at least one of these must match), -words for
+// unwanted. And to look up by codepoint just enter the decimal or
+// hexadecimal value.
 
 pub static HELP_HTML: &str = "<body>
 <p><center><font color=navy size=6><b>CharFind</b></font></center></p>

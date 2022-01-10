@@ -3,8 +3,8 @@
 
 use super::CONFIG;
 use crate::fixed::{
-    Action, APPNAME, BUTTON_HEIGHT, BUTTON_WIDTH, ICON, PAD,
-    ROW_HEIGHT, WINDOW_HEIGHT_MIN, WINDOW_WIDTH_MIN,
+    Action, APPNAME, BUTTON_HEIGHT, BUTTON_WIDTH, ICON, PAD, ROW_HEIGHT,
+    WINDOW_HEIGHT_MIN, WINDOW_WIDTH_MIN,
 };
 use crate::util;
 use fltk::prelude::*;
@@ -12,8 +12,6 @@ use fltk::prelude::*;
 pub struct Widgets {
     pub main_window: fltk::window::Window,
     pub find_combo: fltk::misc::InputChoice,
-    pub all_radio: fltk::button::RadioRoundButton,
-    pub any_radio: fltk::button::RadioRoundButton,
     pub browser: fltk::browser::HoldBrowser,
     pub copy_input: fltk::input::Input,
 }
@@ -25,22 +23,14 @@ pub fn make(sender: fltk::app::Sender<Action>) -> Widgets {
         .size_of_parent()
         .with_type(fltk::group::FlexType::Column);
     vbox.set_margin(PAD);
-    let (find_combo, all_radio, any_radio, top_row) =
-        add_top_row(sender, width);
+    let (find_combo, top_row) = add_top_row(sender, width);
     vbox.set_size(&top_row, ROW_HEIGHT);
     let browser = add_middle_row(sender, width);
     let (copy_input, bottom_row) = add_bottom_row(sender, width);
     vbox.set_size(&bottom_row, ROW_HEIGHT);
     vbox.end();
     main_window.end();
-    Widgets {
-        main_window,
-        find_combo,
-        all_radio,
-        any_radio,
-        browser,
-        copy_input,
-    }
+    Widgets { main_window, find_combo, browser, copy_input }
 }
 
 fn make_main_window() -> (fltk::window::Window, i32) {
@@ -50,10 +40,10 @@ fn make_main_window() -> (fltk::window::Window, i32) {
         fltk::window::Window::new(x, y, width, height, APPNAME);
     main_window.set_icon(Some(icon));
     main_window.size_range(
-         WINDOW_WIDTH_MIN,
-         WINDOW_HEIGHT_MIN,
-         fltk::app::screen_size().0 as i32,
-         fltk::app::screen_size().1 as i32,
+        WINDOW_WIDTH_MIN,
+        WINDOW_HEIGHT_MIN,
+        fltk::app::screen_size().0 as i32,
+        fltk::app::screen_size().1 as i32,
     );
     main_window.make_resizable(true);
     (main_window, width)
@@ -62,13 +52,8 @@ fn make_main_window() -> (fltk::window::Window, i32) {
 fn add_top_row(
     sender: fltk::app::Sender<Action>,
     width: i32,
-) -> (
-    fltk::misc::InputChoice,
-    fltk::button::RadioRoundButton,
-    fltk::button::RadioRoundButton,
-    fltk::group::Flex,
-) {
-    // TODO tooltips to button & radio buttons
+) -> (fltk::misc::InputChoice, fltk::group::Flex) {
+    // TODO tooltips to button
     let mut row = fltk::group::Flex::default()
         .with_size(width, ROW_HEIGHT)
         .with_type(fltk::group::FlexType::Row);
@@ -93,26 +78,13 @@ fn add_top_row(
     search_button.set_callback(move |_| {
         sender.send(Action::Search);
     });
-    let match_label = fltk::frame::Frame::default()
-        .with_label("Match:")
-        .with_align(fltk::enums::Align::Inside | fltk::enums::Align::Right);
-    let mut all_radio =
-        fltk::button::RadioRoundButton::default().with_label("A&ll Words");
-    all_radio.set(true);
-    all_radio.visible_focus(false);
-    let mut any_radio =
-        fltk::button::RadioRoundButton::default().with_label("A&ny Words");
-    any_radio.visible_focus(false);
-    let label_width = BUTTON_WIDTH - PAD;
-    let radio_width = (BUTTON_WIDTH as f32 * 1.5) as i32;
-    let width = (width / 6).max(radio_width).min(label_width);
-    row.set_size(&find_label, width.min(label_width));
-    row.set_size(&search_button, width.min(BUTTON_WIDTH));
-    row.set_size(&match_label, width.min(label_width));
-    row.set_size(&all_radio, width.max(radio_width));
-    row.set_size(&any_radio, width.max(radio_width));
+    let mut option_menu_button = fltk::menu::MenuButton::default();
+    option_menu_button.set_label("&Options");
+    row.set_size(&find_label, BUTTON_WIDTH - PAD);
+    row.set_size(&search_button, BUTTON_WIDTH + (2 * PAD));
+    row.set_size(&option_menu_button, BUTTON_WIDTH + (2 * PAD));
     row.end();
-    (find_combo, all_radio, any_radio, row)
+    (find_combo, row)
 }
 
 fn initialize_find_combo(
@@ -121,8 +93,10 @@ fn initialize_find_combo(
 ) {
     find_combo.menu_button().visible_focus(false);
     find_combo.handle(move |find_combo, event| {
-        if !(find_combo.has_focus() || find_combo.input().has_focus()
-             || find_combo.menu_button().has_focus()) {
+        if !(find_combo.has_focus()
+            || find_combo.input().has_focus()
+            || find_combo.menu_button().has_focus())
+        {
             return false;
         }
         if event == fltk::enums::Event::KeyUp {
@@ -153,8 +127,10 @@ fn add_middle_row(
     let mut browser = fltk::browser::HoldBrowser::default();
     browser.set_column_char('\t');
     browser.handle(move |browser, event| {
-        if browser.has_focus() && event == fltk::enums::Event::KeyUp
-                && fltk::app::event_key().bits() == 32 {
+        if browser.has_focus()
+            && event == fltk::enums::Event::KeyUp
+            && fltk::app::event_key().bits() == 32
+        {
             sender.send(Action::AddFromTable); // Space
             true
         } else {
