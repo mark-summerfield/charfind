@@ -9,8 +9,7 @@ pub static APPNAME: &str = "CharFind";
 pub static VERSION: &str = "0.1.0";
 pub static CHARDATA: &[u8] = include_bytes!("../chardata.txt.gz");
 pub const ICON: &str = include_str!("../images/charfind.svg");
-pub const SEARCHES_SIZE: usize = 20;
-pub const HISTORY_SIZE: usize = 26;
+pub const AUTO_MENU_SIZE: usize = 26;
 pub const PAD: i32 = 6;
 pub const WINDOW_WIDTH_MIN: i32 = 600;
 pub const WINDOW_HEIGHT_MIN: i32 = 460;
@@ -23,6 +22,7 @@ pub const SCALE_MAX: f32 = 3.5;
 #[derive(Copy, Clone, Debug)]
 pub enum Action {
     Search,
+    SearchFor(i32),
     Copy,
     AddChar(char),
     AddFromTable,

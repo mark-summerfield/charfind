@@ -66,6 +66,7 @@ fn add_top_row(
         .set_align(fltk::enums::Align::Inside | fltk::enums::Align::Right);
     let mut find_combo = fltk::misc::InputChoice::default();
     initialize_find_combo(&mut find_combo, sender);
+    util::populate_find_combo(&mut find_combo, sender);
     find_label.set_callback({
         let mut find_combo = find_combo.clone();
         move |_| {
@@ -80,6 +81,7 @@ fn add_top_row(
     });
     let mut option_menu_button = fltk::menu::MenuButton::default();
     option_menu_button.set_label("&Options");
+    //////////////////////// Help About - Quit
     row.set_size(&find_label, BUTTON_WIDTH - PAD);
     row.set_size(&search_button, BUTTON_WIDTH + (2 * PAD));
     row.set_size(&option_menu_button, BUTTON_WIDTH + (2 * PAD));
@@ -110,10 +112,6 @@ fn initialize_find_combo(
         }
         false
     });
-    let config = CONFIG.get().read().unwrap();
-    for s in &config.searches {
-        find_combo.add(s);
-    }
 }
 
 fn add_middle_row(

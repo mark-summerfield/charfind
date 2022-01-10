@@ -2,7 +2,7 @@
 // License: GPLv3
 
 use super::CONFIG;
-use crate::fixed::{about_html, CHARDATA, HELP_HTML};
+use crate::fixed::{about_html, Action, CHARDATA, HELP_HTML};
 use crate::html_form;
 use crate::options_form;
 use crate::util;
@@ -134,11 +134,20 @@ impl Application {
     fn update_searches(&mut self) {
         if let Some(line) = self.find_combo.value() {
             if util::add_to_searches(&line) {
-                self.find_combo.clear();
-                let config = CONFIG.get().read().unwrap();
-                for s in &config.searches {
-                    self.find_combo.add(&s);
-                }
+                util::populate_find_combo(
+                    &mut self.find_combo,
+                    self.sender,
+                );
+            }
+        }
+    }
+
+    pub(crate) fn on_search_for(&mut self, i: i32) {
+        if let Some(item) = self.find_combo.menu_button().at(i) {
+            if let Some(text) = item.label() {
+                let (_, term) = text.split_at(3);
+                self.find_combo.set_value(term);
+                self.sender.send(Action::Search);
             }
         }
     }

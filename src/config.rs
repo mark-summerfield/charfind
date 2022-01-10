@@ -2,8 +2,8 @@
 // License: GPLv3
 
 use crate::fixed::{
-    APPNAME, HISTORY_SIZE, SCALE_MAX, SCALE_MIN, SEARCHES_SIZE,
-    WINDOW_HEIGHT_MIN, WINDOW_WIDTH_MIN,
+    APPNAME, AUTO_MENU_SIZE, SCALE_MAX, SCALE_MIN, WINDOW_HEIGHT_MIN,
+    WINDOW_WIDTH_MIN,
 };
 use crate::util;
 use std::collections::VecDeque;
@@ -170,11 +170,11 @@ fn read_general_properties(
                     config.history.push_front(c);
                 }
             }
-            config.history.truncate(HISTORY_SIZE);
+            config.history.truncate(AUTO_MENU_SIZE);
         }
     }
     config.searches.clear();
-    for i in 1..=SEARCHES_SIZE {
+    for i in 1..=AUTO_MENU_SIZE {
         let key = format!("{}{}", SEARCH_KEY, i);
         if let Some(value) = properties.get(&key) {
             let value = value.to_string();
@@ -183,13 +183,13 @@ fn read_general_properties(
             }
         }
     }
-    if config.searches.len() < SEARCHES_SIZE {
+    if config.searches.len() < AUTO_MENU_SIZE {
         for s in DEFAULT_SEARCHES.iter() {
             let value = s.to_string();
             if !config.searches.contains(&value) {
                 config.searches.push_back(value);
             }
-            if config.searches.len() == SEARCHES_SIZE {
+            if config.searches.len() == AUTO_MENU_SIZE {
                 break;
             }
         }

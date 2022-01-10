@@ -16,6 +16,7 @@ pub struct Application {
     copy_input: fltk::input::Input,
     help_form: Option<html_form::Form>,
     chardata: Option<String>,
+    sender: fltk::app::Sender<Action>,
     receiver: fltk::app::Receiver<Action>,
 }
 
@@ -35,6 +36,7 @@ impl Application {
             copy_input: widgets.copy_input,
             help_form: None,
             chardata: None,
+            sender,
             receiver,
         }
     }
@@ -44,6 +46,7 @@ impl Application {
             if let Some(action) = self.receiver.recv() {
                 match action {
                     Action::Search => self.on_search(),
+                    Action::SearchFor(i) => self.on_search_for(i),
                     Action::Copy => self.on_copy(),
                     Action::AddChar(c) => self.on_add_char(c),
                     Action::AddFromTable => self.on_add_from_table(),

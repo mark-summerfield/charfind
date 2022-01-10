@@ -2,7 +2,8 @@
 // License: GPLv3
 
 use super::CONFIG;
-use crate::fixed::{HISTORY_SIZE, SEARCHES_SIZE};
+use crate::fixed::{Action, AUTO_MENU_SIZE};
+use fltk::prelude::*;
 use std::{cmp, fmt, str};
 
 pub fn x() -> i32 {
@@ -79,7 +80,7 @@ pub fn add_to_history(x: char) -> bool {
     }
     let mut config = CONFIG.get().write().unwrap();
     config.history.push_front(x);
-    config.history.truncate(HISTORY_SIZE);
+    config.history.truncate(AUTO_MENU_SIZE);
     true
 }
 
@@ -101,6 +102,28 @@ pub fn add_to_searches(x: &str) -> bool {
         }
     }
     config.searches.push_front(x);
-    config.searches.truncate(SEARCHES_SIZE);
+    config.searches.truncate(AUTO_MENU_SIZE);
     true
+}
+
+static A_TO_Z: [char; 26] = [
+    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
+    'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+];
+
+pub fn populate_find_combo(
+    find_combo: &mut fltk::misc::InputChoice,
+    sender: fltk::app::Sender<Action>,
+) {
+    find_combo.clear();
+    let config = CONFIG.get().read().unwrap();
+    for (i, s) in config.searches.iter().enumerate() {
+        find_combo.menu_button().add_emit(
+            &format!("&{} {}", A_TO_Z[i], s),
+            fltk::enums::Shortcut::None,
+            fltk::menu::MenuFlag::Normal,
+            sender,
+            Action::SearchFor(i as i32),
+        );
+    }
 }
