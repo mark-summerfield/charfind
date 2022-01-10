@@ -83,7 +83,7 @@ impl Config {
     }
 }
 
-static DEFAULT_SEARCHES: [&str; 6] = [
+static DEFAULT_SEARCHES: [&str; 7] = [
     "arrow",
     "asterisk",
     "block",
