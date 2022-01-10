@@ -2,7 +2,7 @@
 // License: GPLv3
 
 use super::CONFIG;
-use crate::fixed::{Action, AUTO_MENU_SIZE};
+use crate::fixed::{Action, AUTO_MENU_SIZE, A_TO_Z};
 use fltk::prelude::*;
 use std::{cmp, fmt, str};
 
@@ -71,6 +71,14 @@ impl std::fmt::Display for Pos {
     }
 }
 
+pub fn string_for_codepoint(cp: u32) -> String {
+    if cp <= 0xFFFF {
+        format!("  {:04X}", cp)
+    } else {
+        format!("{:>6X}", cp)
+    }
+}
+
 pub fn add_to_history(x: char) -> bool {
     {
         let config = CONFIG.get().read().unwrap();
@@ -105,11 +113,6 @@ pub fn add_to_searches(x: &str) -> bool {
     config.searches.truncate(AUTO_MENU_SIZE);
     true
 }
-
-static A_TO_Z: [char; 26] = [
-    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
-    'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-];
 
 pub fn populate_find_combo(
     find_combo: &mut fltk::misc::InputChoice,

@@ -1,7 +1,4 @@
-# TODO Get rid of Add buttons except one "&Add" (from table)
-# TODO Get rid of Any and All words radiobuttons
-# TODO Add a &History button that lists the last 35 chars matched
-# with shortcuts &1 .. &9 &A .. &Z
+# TODO implement on_add_char(): add to copy_input & add_to_history()
 
 # TODO
 # * git mv preprocessunidata.py preprocessunidata-txt.py

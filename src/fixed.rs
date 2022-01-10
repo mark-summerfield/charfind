@@ -11,13 +11,17 @@ pub static CHARDATA: &[u8] = include_bytes!("../chardata.txt.gz");
 pub const ICON: &str = include_str!("../images/charfind.svg");
 pub const AUTO_MENU_SIZE: usize = 26;
 pub const PAD: i32 = 6;
-pub const WINDOW_WIDTH_MIN: i32 = 600;
-pub const WINDOW_HEIGHT_MIN: i32 = 460;
+pub const WINDOW_WIDTH_MIN: i32 = 400;
+pub const WINDOW_HEIGHT_MIN: i32 = 240;
 pub const ROW_HEIGHT: i32 = 40;
 pub const BUTTON_HEIGHT: i32 = 30;
-pub const BUTTON_WIDTH: i32 = 70;
+pub const BUTTON_WIDTH: i32 = 90;
 pub const SCALE_MIN: f32 = 0.5;
 pub const SCALE_MAX: f32 = 3.5;
+pub static A_TO_Z: [char; 26] = [
+    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
+    'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+];
 
 #[derive(Copy, Clone, Debug)]
 pub enum Action {

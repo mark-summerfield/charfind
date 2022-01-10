@@ -40,7 +40,7 @@ impl Application {
                     if let Some(c) = char::from_u32(cp) {
                         n += 1;
                         let bg = if n % 2 == 0 { "@B247" } else { "" };
-                        let cp = string_for_codepoint(cp);
+                        let cp = util::string_for_codepoint(cp);
                         self.browser.insert(
                             n,
                             &format!("{}@t{}\t{}\t{}", bg, c, cp, desc),
@@ -161,7 +161,7 @@ impl Application {
     }
 
     pub(crate) fn on_add_from_table(&mut self) {
-        println!("on_add_from_table"); // TODO // add to copy_input
+        println!("on_add_from_table"); // TODO // call self.on_add_char(c)
     }
 
     pub(crate) fn on_options(&mut self) {
@@ -192,13 +192,5 @@ impl Application {
             self.main_window.height(),
         );
         self.app.quit();
-    }
-}
-
-fn string_for_codepoint(cp: u32) -> String {
-    if cp <= 0xFFFF {
-        format!("  {:04X}", cp)
-    } else {
-        format!("{:>6X}", cp)
     }
 }

@@ -94,7 +94,7 @@ static DEFAULT_SEARCHES: [&str; 7] = [
 ];
 
 const DEFAULT_HISTORY: [char; 9] =
-    ['•', '…', '—', '€', '£', '←', '→', '↑', '↓'];
+    ['£', '•', '…', '—', '€', '←', '→', '↑', '↓'];
 
 impl Default for Config {
     fn default() -> Self {
@@ -162,15 +162,27 @@ fn read_general_properties(
     properties: &ini::Properties,
     config: &mut Config,
 ) {
+    config.history.clear();
     if let Some(value) = properties.get(HISTORY_KEY) {
         if !value.is_empty() {
-            config.history.clear();
-            for c in value.chars().chain(DEFAULT_HISTORY) {
+            for c in value.chars() {
                 if !config.history.contains(&c) {
-                    config.history.push_front(c);
+                    config.history.push_back(c);
+                    if config.history.len() == AUTO_MENU_SIZE {
+                        break;
+                    }
                 }
             }
-            config.history.truncate(AUTO_MENU_SIZE);
+        }
+    }
+    if config.history.len() < AUTO_MENU_SIZE {
+        for c in DEFAULT_HISTORY.iter() {
+            if !config.history.contains(c) {
+                config.history.push_back(*c);
+                if config.history.len() == AUTO_MENU_SIZE {
+                    break;
+                }
+            }
         }
     }
     config.searches.clear();
@@ -185,12 +197,12 @@ fn read_general_properties(
     }
     if config.searches.len() < AUTO_MENU_SIZE {
         for s in DEFAULT_SEARCHES.iter() {
-            let value = s.to_string();
-            if !config.searches.contains(&value) {
-                config.searches.push_back(value);
-            }
-            if config.searches.len() == AUTO_MENU_SIZE {
-                break;
+            let s = s.to_string();
+            if !config.searches.contains(&s) {
+                config.searches.push_back(s);
+                if config.searches.len() == AUTO_MENU_SIZE {
+                    break;
+                }
             }
         }
     }
