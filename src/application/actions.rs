@@ -18,19 +18,24 @@ type WordSet = HashSet<String>;
 
 impl Application {
     pub(crate) fn on_search(&mut self) {
-        let (words, ignores) = self.get_search_words();
-        if words.is_empty() {
+        let (all_of, any_of, none_of) = self.get_search_sets();
+        if all_of.is_empty() && any_of.is_empty() {
             return; // nothing to search for
         }
         self.browser.clear();
-        let (cp1, cp2) = self.get_code_points(&words);
+        let (cp1, cp2) =
+            self.get_code_points(&all_of.union(&any_of).collect());
         self.maybe_populate_chardata();
         let mut n = 1;
         if let Some(chardata) = &self.chardata {
             for line in chardata.lines() {
                 let (cp, desc, keywords) = self.get_unicode_data(line);
-                if self.is_match(cp, cp1, cp2, &words, &keywords)
-                    && ignores.intersection(&keywords).count() == 0
+                if (cp != 0 && (cp == cp1 || cp == cp2))
+                    || (keywords.intersection(&none_of).count() == 0
+                        && (any_of.len() == 0
+                            || keywords.intersection(&any_of).count() > 0)
+                        && keywords.intersection(&all_of).count()
+                            == all_of.len())
                 {
                     if let Some(c) = char::from_u32(cp) {
                         n += 1;
@@ -45,23 +50,6 @@ impl Application {
             }
         }
         self.add_header_line(n - 1);
-    }
-
-    fn is_match(
-        &self,
-        cp: u32,
-        cp1: u32,
-        cp2: u32,
-        words: &WordSet,
-        keywords: &WordSet,
-    ) -> bool {
-        if cp != 0 && (cp == cp1 || cp == cp2) {
-            true
-        } else if self.all_radio.is_toggled() {
-            words.intersection(keywords).count() == words.len()
-        } else {
-            words.intersection(keywords).count() > 0
-        }
     }
 
     fn add_header_line(&mut self, n: i32) {
@@ -91,27 +79,35 @@ impl Application {
         }
     }
 
-    fn get_search_words(&self) -> (WordSet, WordSet) {
+    fn get_search_sets(&self) -> (WordSet, WordSet, WordSet) {
         if let Some(line) = self.find_combo.value() {
-            let mut words = WordSet::new();
-            let mut ignores = WordSet::new();
+            let mut all_of = WordSet::new();
+            let mut any_of = WordSet::new();
+            let mut none_of = WordSet::new();
             for word in line.split_whitespace() {
-                if let Some(word) = word.strip_prefix('-') {
-                    ignores.insert(word.to_uppercase());
+                if let Some(word) = word.strip_prefix('+') {
+                    all_of.insert(word.to_uppercase());
                 } else {
-                    words.insert(word.to_uppercase());
+                    if let Some(word) = word.strip_prefix('-') {
+                        none_of.insert(word.to_uppercase());
+                    } else {
+                        any_of.insert(word.to_uppercase());
+                    }
                 }
             }
-            (words, ignores)
+            (all_of, any_of, none_of)
         } else {
-            (WordSet::new(), WordSet::new())
+            (WordSet::new(), WordSet::new(), WordSet::new())
         }
     }
 
-    fn get_code_points(&self, words: &WordSet) -> (u32, u32) {
+    fn get_code_points(&self, words: &HashSet<&String>) -> (u32, u32) {
         let mut cp1 = 0;
         let mut cp2 = 0;
         for word in words {
+            if word.starts_with('+') || word.starts_with('-') {
+                continue; // + and - mean required or optional in charfind
+            }
             if let Ok(cp) = word.parse::<u32>() {
                 cp1 = cp;
             }
@@ -158,7 +154,6 @@ impl Application {
     pub(crate) fn on_add_from_table(&mut self) {
         println!("on_add_from_table"); // TODO // add to copy_input
     }
-
 
     pub(crate) fn on_options(&mut self) {
         options_form::Form::default();

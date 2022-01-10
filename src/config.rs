@@ -3,7 +3,7 @@
 
 use crate::fixed::{
     APPNAME, HISTORY_SIZE, SCALE_MAX, SCALE_MIN, SEARCHES_SIZE,
-    WINDOW_HEIGHT_MIN, WINDOW_WIDTH_MIN
+    WINDOW_HEIGHT_MIN, WINDOW_WIDTH_MIN,
 };
 use crate::util;
 use std::collections::VecDeque;
@@ -83,10 +83,18 @@ impl Config {
     }
 }
 
-static DEFAULT_SEARCHES: [&str; 6] = ["arrow", "asterisk", "block", "box",
-                                      "symbol greek", "symbol -greek"];
-const DEFAULT_HISTORY: [char; 9] = ['•', '…', '—', '€', '£', '←', '→', '↑',
-                                    '↓'];
+static DEFAULT_SEARCHES: [&str; 6] = [
+    "arrow",
+    "asterisk",
+    "block",
+    "box",
+    "symbol greek",
+    "symbol -greek",
+    "symbol +greek",
+];
+
+const DEFAULT_HISTORY: [char; 9] =
+    ['•', '…', '—', '€', '£', '←', '→', '↑', '↓'];
 
 impl Default for Config {
     fn default() -> Self {
@@ -97,7 +105,9 @@ impl Default for Config {
             window_width: WINDOW_WIDTH_MIN,
             window_scale: 1.0,
             filename: std::path::PathBuf::new(),
-            searches: VecDeque::from(DEFAULT_SEARCHES.map(|s| s.to_string())),
+            searches: VecDeque::from(
+                DEFAULT_SEARCHES.map(|s| s.to_string()),
+            ),
             history: VecDeque::from(DEFAULT_HISTORY),
         }
     }
