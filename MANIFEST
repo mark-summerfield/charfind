@@ -1,3 +1,6 @@
+# TODO try to refactor
+# config read_general_properties() to call
+#   read_with_defaults<T>(deque: &mut VecDec<T>, defaults: &[T])
 # TODO implement on_add_char(): add to copy_input & add_to_history()
 
 # TODO
