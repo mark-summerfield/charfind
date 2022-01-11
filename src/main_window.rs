@@ -118,15 +118,14 @@ fn initialize_option_menu_button(
     option_menu_button: &mut fltk::menu::MenuButton,
     sender: fltk::app::Sender<Action>,
 ) {
-    option_menu_button.set_label("&Options");
+    option_menu_button.set_label("&Menu");
     option_menu_button.add_emit(
         "&Options…",
         fltk::enums::Shortcut::None,
-        fltk::menu::MenuFlag::Normal,
+        fltk::menu::MenuFlag::MenuDivider,
         sender,
         Action::Options,
     );
-    // TODO divider
     option_menu_button.add_emit(
         "&Help",
         fltk::enums::Shortcut::None,
@@ -137,11 +136,10 @@ fn initialize_option_menu_button(
     option_menu_button.add_emit(
         "&About",
         fltk::enums::Shortcut::None,
-        fltk::menu::MenuFlag::Normal,
+        fltk::menu::MenuFlag::MenuDivider,
         sender,
         Action::About,
     );
-    // TODO divider
     option_menu_button.add_emit(
         "&Quit",
         fltk::enums::Shortcut::None,
