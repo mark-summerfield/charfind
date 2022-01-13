@@ -1,7 +1,7 @@
 # TODO
 # OLD: +word  word   -word
 # NEW:  word  word?  -word
-# i.e., the default is AND
+# i.e., the default is AND; one word? is the same as a plain word
 
 # TODO try to refactor
 # config read_general_properties() to call
@@ -35,6 +35,7 @@ src/util.rs
 Cargo.toml
 
 README.md
+help.html
 st.sh
 
 deploy.sh

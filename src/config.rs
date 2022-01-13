@@ -83,18 +83,19 @@ impl Config {
     }
 }
 
-static DEFAULT_SEARCHES: [&str; 7] = [
+static DEFAULT_SEARCHES: [&str; 8] = [
     "arrow",
+    "arrow -down -up",
+    "arrow -down -up -north -south left? right?",
     "asterisk",
     "block",
     "box",
     "symbol greek",
     "symbol -greek",
-    "symbol +greek",
 ];
 
 const DEFAULT_HISTORY: [char; 9] =
-    ['£', '•', '…', '—', '€', '←', '→', '↑', '↓'];
+    ['•', '…', '—', '←', '→', '↑', '↓', '€', '£'];
 
 impl Default for Config {
     fn default() -> Self {

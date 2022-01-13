@@ -8,6 +8,7 @@ use std::env;
 pub static APPNAME: &str = "CharFind";
 pub static VERSION: &str = "0.1.0";
 pub static CHARDATA: &[u8] = include_bytes!("../chardata.txt.gz");
+pub static HELP_HTML: &str = include_str!("../help.html");
 pub const ICON: &str = include_str!("../images/charfind.svg");
 pub const AUTO_MENU_SIZE: usize = 26;
 pub const PAD: i32 = 6;
@@ -69,46 +70,3 @@ Rust {} • fltk-rs {} • FLTK {} • {}/{}
         env::consts::ARCH
     )
 }
-
-// NOTE
-// The Find text consists of one or more required words, plain words,
-// unwanted words, and code points.
-// For example: +left math symbol -greek 2026
-// This means match any characters whose description contains left and math
-// or symbol (or both) but not greek, or any character whose code point is
-// either 2026 decimal or U+07EA (0x07EA is 2026 decimal).
-// In general it should work as expected: use +words for required, plain
-// words for optional (but at least one of these must match), -words for
-// unwanted. And to look up by codepoint just enter the decimal or
-// hexadecimal value.
-
-pub static HELP_HTML: &str = "<body>
-<p><center><font color=navy size=6><b>CharFind</b></font></center></p>
-<font color=blue size=5>The purpose of the game is to remove all the
-tiles.</font>
-<p>
-<font color=#008000 size=4>
-Click a tile that has at least one vertically or horizontally adjoining tile
-of the same color to remove it and any vertically or horizontally adjoining
-tiles of the same color, and <i>their</i> vertically or horizontally
-adjoining tiles, and so on. <i>(So clicking a tile with no adjoining tiles
-of the same color does nothing.)</i> The more tiles that are removed in one
-go, the higher the score.
-</font>
-</p>
-<table border=1 align=center>
-<font color=blue>
-<tr><th>Key</th><th>Action</th></tr>
-<tr><td><b>a</b></td><td>Show About box</td></tr>
-<tr><td><b>h</b> or <b>F1</b></td><td>Show this Help window</td></tr>
-<tr><td><b>n</b></td><td>New Game</td></tr>
-<tr><td><b>o</b></td><td>View or Edit Options</td></tr>
-<tr><td><b>q</b> or <b>Esc</b></td><td>Quit</td></tr>
-<tr><td><b>←</b></td><td>Move the focus left</td></tr>
-<tr><td><b>→</b></td><td>Move the focus right</td></tr>
-<tr><td><b>↑</b></td><td>Move the focus up</td></tr>
-<tr><td><b>↓</b></td><td>Move the focus down</td></tr>
-<tr><td><b>Space</b></td><td>Click the focused tile</td></tr>
-</font>
-</table>
-</body>";

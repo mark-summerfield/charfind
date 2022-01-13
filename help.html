@@ -1,0 +1,47 @@
+<!--
+NOTE
+The Find text consists of one or more required words, plain words,
+unwanted words, and code points.
+Examples:
+arrow matches any character whose description includes "arrow"
+arrow left matches any character whose description includes "arrow" _and_
+     "left"
+arrow left? right? matches any character whose description includes
+     "arrow" _and_ _either_ "left" _or_ "right"
+2026 matches any character whose codepoint is 2026 decimal or 0x07EA
+     hexadecimal (since 07EA base 16 = 2026 base 10).
+In general it should work as expected: use word for required, 
+word? for optional (but at least one of these must match), -word for
+unwanted. And to look up by codepoint just enter the decimal or
+hexadecimal value.
+-->
+<body>
+<p><center><font color=navy size=6><b>CharFind</b></font></center></p>
+<font color=blue size=5>The purpose of the game is to remove all the
+tiles.</font>
+<p>
+<font color=#008000 size=4>
+Click a tile that has at least one vertically or horizontally adjoining tile
+of the same color to remove it and any vertically or horizontally adjoining
+tiles of the same color, and <i>their</i> vertically or horizontally
+adjoining tiles, and so on. <i>(So clicking a tile with no adjoining tiles
+of the same color does nothing.)</i> The more tiles that are removed in one
+go, the higher the score.
+</font>
+</p>
+<table border=1 align=center>
+<font color=blue>
+<tr><th>Key</th><th>Action</th></tr>
+<tr><td><b>a</b></td><td>Show About box</td></tr>
+<tr><td><b>h</b> or <b>F1</b></td><td>Show this Help window</td></tr>
+<tr><td><b>n</b></td><td>New Game</td></tr>
+<tr><td><b>o</b></td><td>View or Edit Options</td></tr>
+<tr><td><b>q</b> or <b>Esc</b></td><td>Quit</td></tr>
+<tr><td><b>←</b></td><td>Move the focus left</td></tr>
+<tr><td><b>→</b></td><td>Move the focus right</td></tr>
+<tr><td><b>↑</b></td><td>Move the focus up</td></tr>
+<tr><td><b>↓</b></td><td>Move the focus down</td></tr>
+<tr><td><b>Space</b></td><td>Click the focused tile</td></tr>
+</font>
+</table>
+</body>
