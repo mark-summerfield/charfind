@@ -63,7 +63,7 @@ fn make_form() -> fltk::window::Window {
     let image = fltk::image::SvgImage::from_data(ICON).unwrap();
     let mut form = fltk::window::Window::default()
         .with_size(WIDTH, 120)
-        .with_label(&format!("Options — {}", APPNAME));
+        .with_label(&format!("Options — {APPNAME}"));
     if let Some(window) = fltk::app::first_window() {
         form.set_pos(window.x() + 50, window.y() + 100);
     }

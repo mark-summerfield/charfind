@@ -41,10 +41,8 @@ impl Application {
                         n += 1;
                         let bg = if n % 2 == 0 { "@B247" } else { "" };
                         let cp = util::string_for_codepoint(cp);
-                        self.browser.insert(
-                            n,
-                            &format!("{}@t{}\t{}\t{}", bg, c, cp, desc),
-                        );
+                        self.browser
+                            .insert(n, &format!("{bg}@t{c}\t{cp}\t{desc}"));
                     }
                 }
             }
@@ -58,9 +56,8 @@ impl Application {
             self.browser.insert(
                 1,
                 &format!(
-                    "@C7@B136@t@bChar\tU+HHHH\tDescription ({} match{})",
+                    "@C7@B136@t@bChar\tU+HHHH\tDescription ({} match{s})",
                     n.separate_with_commas(),
-                    s
                 ),
             );
             self.update_searches();

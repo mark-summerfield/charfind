@@ -73,9 +73,9 @@ impl std::fmt::Display for Pos {
 
 pub fn string_for_codepoint(cp: u32) -> String {
     if cp <= 0xFFFF {
-        format!("  {:04X}", cp)
+        format!("  {cp:04X}")
     } else {
-        format!("{:>6X}", cp)
+        format!("{cp:>6X}")
     }
 }
 
@@ -122,7 +122,7 @@ pub fn populate_find_combo(
     let config = CONFIG.get().read().unwrap();
     for (i, s) in config.searches.iter().enumerate() {
         find_combo.menu_button().add_emit(
-            &format!("&{} {}", A_TO_Z[i], s),
+            &format!("&{} {s}", A_TO_Z[i]),
             fltk::enums::Shortcut::None,
             fltk::menu::MenuFlag::Normal,
             sender,

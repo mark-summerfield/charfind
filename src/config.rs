@@ -55,8 +55,7 @@ impl Config {
             match ini.write_to_file(&self.filename) {
                 Ok(_) => {}
                 Err(err) => self.warning(&format!(
-                    "failed to save configuration: {}",
-                    err
+                    "failed to save configuration: {err}"
                 )),
             }
         }
@@ -72,13 +71,13 @@ impl Config {
 
     fn save_searches(&self, ini: &mut ini::Ini) {
         for (i, s) in self.searches.iter().enumerate() {
-            let key = format!("{}{}", SEARCH_KEY, i + 1);
+            let key = format!("{SEARCH_KEY}{}", i + 1);
             ini.with_section(Some(GENERAL_SECTION)).set(key, s.clone());
         }
     }
 
     fn warning(&self, message: &str) {
-        fltk::dialog::message_title(&format!("Warning — {}", APPNAME));
+        fltk::dialog::message_title(&format!("Warning — {APPNAME}"));
         fltk::dialog::message(util::x() - 200, util::y() - 100, message);
     }
 }
@@ -124,7 +123,7 @@ fn get_config_filename() -> std::path::PathBuf {
         dir = dirs::home_dir();
     }
     if let Some(dir) = dir {
-        dir.join(format!("{}{}.ini", dot, APPNAME.to_lowercase()))
+        dir.join(format!("{dot}{}.ini", APPNAME.to_lowercase()))
     } else {
         std::path::PathBuf::new()
     }
@@ -188,7 +187,7 @@ fn read_general_properties(
     }
     config.searches.clear();
     for i in 1..=AUTO_MENU_SIZE {
-        let key = format!("{}{}", SEARCH_KEY, i);
+        let key = format!("{SEARCH_KEY}{i}");
         if let Some(value) = properties.get(&key) {
             let value = value.to_string();
             if !config.searches.contains(&value) {

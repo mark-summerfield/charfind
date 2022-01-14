@@ -213,7 +213,7 @@ fn populate_history_menu_button(
     let config = CONFIG.get().read().unwrap();
     for (i, c) in config.history.iter().enumerate() {
         option_menu_button.add_emit(
-            &format!("&{}  {}", A_TO_Z[i], c),
+            &format!("&{}  {c}", A_TO_Z[i]),
             fltk::enums::Shortcut::None,
             fltk::menu::MenuFlag::Normal,
             sender,
