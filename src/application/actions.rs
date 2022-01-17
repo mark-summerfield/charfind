@@ -149,6 +149,23 @@ impl Application {
         }
     }
 
+    pub(crate) fn on_update_preview(&mut self) {
+        self.preview_frame.set_label("");
+        if let Some(text) = self.browser.selected_text() {
+            let parts: Vec<&str> = text.split('\t').collect();
+            if parts.len() > 0 {
+                let field = parts[0];
+                if field.ends_with("Char") {
+                    return; // Title row
+                }
+                if field.len() > 0 {
+                    let c = field.chars().last().unwrap();
+                    self.preview_frame.set_label(&c.to_string());
+                }
+            }
+        }
+    }
+
     pub(crate) fn on_copy(&mut self) {
         println!("on_copy"); // TODO copy copy_input to clipboard
     }

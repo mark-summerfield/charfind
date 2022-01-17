@@ -15,6 +15,7 @@ pub struct Application {
     history_menu_button: fltk::menu::MenuButton,
     browser: fltk::browser::HoldBrowser,
     copy_input: fltk::input::Input,
+    preview_frame: fltk::frame::Frame,
     help_form: Option<html_form::Form>,
     chardata: Option<String>,
     sender: fltk::app::Sender<Action>,
@@ -36,6 +37,7 @@ impl Application {
             history_menu_button: widgets.history_menu_button,
             browser: widgets.browser,
             copy_input: widgets.copy_input,
+            preview_frame: widgets.preview_frame,
             help_form: None,
             chardata: None,
             sender,
@@ -55,6 +57,7 @@ impl Application {
                     Action::FocusToSearchResults => {
                         self.browser.take_focus().unwrap()
                     }
+                    Action::UpdatePreview => self.on_update_preview(),
                     Action::Options => self.on_options(),
                     Action::About => self.on_about(),
                     Action::Help => self.on_help(),

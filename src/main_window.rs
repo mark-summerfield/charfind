@@ -1,6 +1,8 @@
 // Copyright © 2021-22 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
+// TODO tooltips to buttons
+
 use super::CONFIG;
 use crate::fixed::{
     Action, APPNAME, A_TO_Z, BUTTON_HEIGHT, BUTTON_WIDTH, ICON, PAD,
@@ -15,6 +17,7 @@ pub struct Widgets {
     pub history_menu_button: fltk::menu::MenuButton,
     pub browser: fltk::browser::HoldBrowser,
     pub copy_input: fltk::input::Input,
+    pub preview_frame: fltk::frame::Frame,
 }
 
 pub fn make(sender: fltk::app::Sender<Action>) -> Widgets {
@@ -27,10 +30,8 @@ pub fn make(sender: fltk::app::Sender<Action>) -> Widgets {
     let (find_combo, history_menu_button, top_row) =
         add_top_row(sender, width);
     vbox.set_size(&top_row, ROW_HEIGHT);
-    let (browser, copy_input, preview_frame) = add_middle_row(sender, width);
-    //let (copy_input, bottom_row) =
-    //    add_bottom_row(sender, width);
-    //vbox.set_size(&bottom_row, ROW_HEIGHT);
+    let (browser, copy_input, preview_frame) =
+        add_middle_row(sender, width);
     vbox.end();
     main_window.end();
     Widgets {
@@ -39,7 +40,7 @@ pub fn make(sender: fltk::app::Sender<Action>) -> Widgets {
         history_menu_button,
         browser,
         copy_input,
-        // TODO preview_frame
+        preview_frame,
     }
 }
 
@@ -63,7 +64,6 @@ fn add_top_row(
     sender: fltk::app::Sender<Action>,
     width: i32,
 ) -> (fltk::misc::InputChoice, fltk::menu::MenuButton, fltk::group::Flex) {
-    // TODO tooltips to button
     let mut row = fltk::group::Flex::default()
         .with_size(width, ROW_HEIGHT)
         .with_type(fltk::group::FlexType::Row);
@@ -117,41 +117,6 @@ fn initialize_find_combo(
     });
 }
 
-fn initialize_option_menu_button(
-    option_menu_button: &mut fltk::menu::MenuButton,
-    sender: fltk::app::Sender<Action>,
-) {
-    option_menu_button.set_label("&Menu");
-    option_menu_button.add_emit(
-        "&Options…",
-        fltk::enums::Shortcut::None,
-        fltk::menu::MenuFlag::MenuDivider,
-        sender,
-        Action::Options,
-    );
-    option_menu_button.add_emit(
-        "&Help",
-        fltk::enums::Shortcut::None,
-        fltk::menu::MenuFlag::Normal,
-        sender,
-        Action::Help,
-    );
-    option_menu_button.add_emit(
-        "&About",
-        fltk::enums::Shortcut::None,
-        fltk::menu::MenuFlag::MenuDivider,
-        sender,
-        Action::About,
-    );
-    option_menu_button.add_emit(
-        "&Quit",
-        fltk::enums::Shortcut::None,
-        fltk::menu::MenuFlag::Normal,
-        sender,
-        Action::Quit,
-    );
-}
-
 fn add_middle_row(
     sender: fltk::app::Sender<Action>,
     width: i32,
@@ -163,17 +128,22 @@ fn add_middle_row(
     let mut browser = fltk::browser::HoldBrowser::default();
     browser.set_column_char('\t');
     browser.handle(move |browser, event| {
-        if browser.has_focus()
-            && event == fltk::enums::Event::KeyUp
-            && fltk::app::event_key().bits() == 32
-        {
-            sender.send(Action::AddFromTable); // Space
-            true
-        } else {
-            false
+        if browser.has_focus() {
+            if event == fltk::enums::Event::KeyUp
+                && fltk::app::event_key().bits() == 32
+            {
+                sender.send(Action::AddFromTable); // Space
+                return true;
+            }
+            if event == fltk::enums::Event::KeyUp
+                || event == fltk::enums::Event::Released
+            {
+                sender.send(Action::UpdatePreview);
+            }
         }
+        false
     });
-    let (copy_input, preview_frame, mut column) = add_right_column(sender);
+    let (copy_input, preview_frame, column) = add_right_column(sender);
     row.set_size(&column, BUTTON_WIDTH);
     row.end();
     (browser, copy_input, preview_frame)
@@ -184,71 +154,44 @@ fn add_right_column(
 ) -> (fltk::input::Input, fltk::frame::Frame, fltk::group::Flex) {
     let mut column = fltk::group::Flex::default()
         .with_type(fltk::group::FlexType::Column);
-    let mut add_button = fltk::button::Button::default().with_label("&Add");
-    add_button.visible_focus(false);
-    add_button.set_callback(move |_| {
-        sender.send(Action::AddFromTable);
-    });
+    add_button("&Add", Action::AddFromTable, sender, &mut column);
     let copy_input = fltk::input::Input::default();
-    let mut copy_button =
-        fltk::button::Button::default().with_label("&Copy");
-    copy_button.visible_focus(false);
-    copy_button.set_callback(move |_| {
-        sender.send(Action::Copy);
-    });
-    let mut preview_frame = fltk::frame::Frame::default().with_label("?");
+    add_button("&Copy", Action::Copy, sender, &mut column);
+    let mut preview_frame = fltk::frame::Frame::default();
     let size = preview_frame.label_size();
     preview_frame.set_label_size(size * 3);
-    // TODO get rid of option_menu_button; replace with separate buttons:
-    // &Options &Help &About &Quit
-    let mut option_menu_button = fltk::menu::MenuButton::default();
-    initialize_option_menu_button(&mut option_menu_button, sender);
+    add_button("&Options…", Action::Options, sender, &mut column);
+    add_button("Help", Action::Help, sender, &mut column);
+    add_button("A&bout", Action::About, sender, &mut column);
+    add_button("&Quit", Action::Quit, sender, &mut column);
     column.set_size(&copy_input, BUTTON_HEIGHT);
-    column.set_size(&add_button, BUTTON_HEIGHT);
-    column.set_size(&copy_button, BUTTON_HEIGHT);
     column.set_size(&preview_frame, BUTTON_HEIGHT * 3);
-    column.set_size(&option_menu_button, BUTTON_HEIGHT);
     column.end();
     (copy_input, preview_frame, column)
 }
 
-/*
-fn add_bottom_row(
+fn add_button(
+    label: &str,
+    action: Action,
     sender: fltk::app::Sender<Action>,
-    width: i32,
-) -> (fltk::input::Input, fltk::group::Flex) {
-    // TODO tooltips to buttons
-    let mut row = fltk::group::Flex::default()
-        .with_size(width, ROW_HEIGHT)
-        .with_type(fltk::group::FlexType::Row);
-    row.set_margin(PAD);
-    let mut add_button = fltk::button::Button::default().with_label("&Add");
-    add_button.visible_focus(false);
-    add_button.set_callback(move |_| {
-        sender.send(Action::AddFromTable);
+    column: &mut fltk::group::Flex,
+) {
+    let mut button = fltk::button::Button::default().with_label(label);
+    button.visible_focus(false);
+    button.set_callback(move |_| {
+        sender.send(action);
     });
-    let copy_input = fltk::input::Input::default();
-    let mut copy_button =
-        fltk::button::Button::default().with_label("&Copy");
-    copy_button.visible_focus(false);
-    copy_button.set_callback(move |_| {
-        sender.send(Action::Copy);
-    });
-    row.set_size(&add_button, BUTTON_WIDTH);
-    row.set_size(&copy_button, BUTTON_WIDTH);
-    row.end();
-    (copy_input, row)
+    column.set_size(&button, BUTTON_HEIGHT);
 }
-*/
 
 fn populate_history_menu_button(
-    option_menu_button: &mut fltk::menu::MenuButton,
+    history_menu_button: &mut fltk::menu::MenuButton,
     sender: fltk::app::Sender<Action>,
 ) {
-    option_menu_button.clear();
+    history_menu_button.clear();
     let config = CONFIG.get().read().unwrap();
     for (i, c) in config.history.iter().enumerate() {
-        option_menu_button.add_emit(
+        history_menu_button.add_emit(
             &format!("&{}  {c}", A_TO_Z[i]),
             fltk::enums::Shortcut::None,
             fltk::menu::MenuFlag::Normal,

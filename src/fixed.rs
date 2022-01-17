@@ -13,7 +13,7 @@ pub const ICON: &str = include_str!("../images/charfind.svg");
 pub const AUTO_MENU_SIZE: usize = 26;
 pub const PAD: i32 = 6;
 pub const WINDOW_WIDTH_MIN: i32 = 400;
-pub const WINDOW_HEIGHT_MIN: i32 = 240;
+pub const WINDOW_HEIGHT_MIN: i32 = 400;
 pub const ROW_HEIGHT: i32 = 40;
 pub const BUTTON_HEIGHT: i32 = 30;
 pub const BUTTON_WIDTH: i32 = 90;
@@ -26,16 +26,17 @@ pub static A_TO_Z: [char; 26] = [
 
 #[derive(Copy, Clone, Debug)]
 pub enum Action {
-    Search,
-    SearchFor(i32),
-    Copy,
+    About,
     AddChar(char),
     AddFromTable,
+    Copy,
     FocusToSearchResults,
-    Options,
-    About,
     Help,
+    Options,
     Quit,
+    Search,
+    SearchFor(i32),
+    UpdatePreview,
 }
 
 pub fn about_html() -> String {
