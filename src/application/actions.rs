@@ -4,6 +4,7 @@
 use super::CONFIG;
 use crate::fixed::{about_html, Action, CHARDATA, HELP_HTML};
 use crate::html_form;
+use crate::main_window;
 use crate::options_form;
 use crate::util;
 use crate::Application;
@@ -151,31 +152,49 @@ impl Application {
 
     pub(crate) fn on_update_preview(&mut self) {
         self.preview_frame.set_label("");
+        if let Some(c) = self.get_selected_char() {
+            self.preview_frame.set_label(&c.to_string());
+        }
+    }
+
+    fn get_selected_char(&mut self) -> Option<char> {
         if let Some(text) = self.browser.selected_text() {
             let parts: Vec<&str> = text.split('\t').collect();
             if parts.len() > 0 {
                 let field = parts[0];
                 if field.ends_with("Char") {
-                    return; // Title row
+                    return None; // Title row
                 }
                 if field.len() > 0 {
-                    let c = field.chars().last().unwrap();
-                    self.preview_frame.set_label(&c.to_string());
+                    return Some(field.chars().last().unwrap());
                 }
             }
         }
+        None
     }
 
     pub(crate) fn on_copy(&mut self) {
-        println!("on_copy"); // TODO copy copy_input to clipboard
+        let text = self.copy_input.value();
+        if !text.is_empty() {
+            fltk::app::copy(&text);
+        }
     }
 
     pub(crate) fn on_add_char(&mut self, c: char) {
-        println!("on_add_char({})", c); // TODO // add to copy_input
+        util::add_to_history(c);
+        main_window::populate_history_menu_button(
+            &mut self.history_menu_button,
+            self.sender,
+        );
+        let mut text = self.copy_input.value();
+        text.push(c);
+        self.copy_input.set_value(&text);
     }
 
     pub(crate) fn on_add_from_table(&mut self) {
-        println!("on_add_from_table"); // TODO // call self.on_add_char(c)
+        if let Some(c) = self.get_selected_char() {
+            self.on_add_char(c);
+        }
     }
 
     pub(crate) fn on_options(&mut self) {
@@ -198,7 +217,6 @@ impl Application {
 
     pub(crate) fn on_quit(&mut self) {
         let config = CONFIG.get().read().unwrap();
-        // TODO save history & searches not here but AS WE GO!
         config.save(
             self.main_window.x(),
             self.main_window.y(),

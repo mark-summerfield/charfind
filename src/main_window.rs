@@ -1,8 +1,6 @@
 // Copyright © 2021-22 Mark Summerfield. All rights reserved.
 // License: GPLv3
 
-// TODO tooltips to buttons
-
 use super::CONFIG;
 use crate::fixed::{
     Action, APPNAME, A_TO_Z, BUTTON_HEIGHT, BUTTON_WIDTH, ICON, PAD,
@@ -86,6 +84,9 @@ fn add_top_row(
     row.set_size(&find_label, BUTTON_WIDTH);
     let mut history_menu_button =
         fltk::menu::MenuButton::default().with_label("&History");
+    history_menu_button.set_tooltip(
+        "Add a previously added character to the output editor",
+    );
     populate_history_menu_button(&mut history_menu_button, sender);
     row.set_size(&history_menu_button, BUTTON_WIDTH);
     row.end();
@@ -96,6 +97,8 @@ fn initialize_find_combo(
     find_combo: &mut fltk::misc::InputChoice,
     sender: fltk::app::Sender<Action>,
 ) {
+    find_combo
+        .set_tooltip("Find every 'word' and at least one of 'aword? bword?' but not any '-word's");
     find_combo.menu_button().visible_focus(false);
     find_combo.handle(move |find_combo, event| {
         if !(find_combo.has_focus()
@@ -154,16 +157,53 @@ fn add_right_column(
 ) -> (fltk::input::Input, fltk::frame::Frame, fltk::group::Flex) {
     let mut column = fltk::group::Flex::default()
         .with_type(fltk::group::FlexType::Column);
-    add_button("&Add", Action::AddFromTable, sender, &mut column);
-    let copy_input = fltk::input::Input::default();
-    add_button("&Copy", Action::Copy, sender, &mut column);
+    add_button(
+        "Add the selected character from the table to the output editor",
+        "&Add",
+        Action::AddFromTable,
+        sender,
+        &mut column,
+    );
+    let mut copy_input = fltk::input::Input::default();
+    copy_input.set_tooltip("The output editor: chosen characters are added here and the text here gets copied to the clipboard");
+    add_button(
+        "Copy the output editor's text to the clipboard",
+        "&Copy",
+        Action::Copy,
+        sender,
+        &mut column,
+    );
     let mut preview_frame = fltk::frame::Frame::default();
     let size = preview_frame.label_size();
     preview_frame.set_label_size(size * 3);
-    add_button("&Options…", Action::Options, sender, &mut column);
-    add_button("Help", Action::Help, sender, &mut column);
-    add_button("A&bout", Action::About, sender, &mut column);
-    add_button("&Quit", Action::Quit, sender, &mut column);
+    add_button(
+        "Pop up the Options dialog",
+        "&Options…",
+        Action::Options,
+        sender,
+        &mut column,
+    );
+    add_button(
+        "Show the Help window",
+        "Help",
+        Action::Help,
+        sender,
+        &mut column,
+    );
+    add_button(
+        "Pop up the About box",
+        "A&bout",
+        Action::About,
+        sender,
+        &mut column,
+    );
+    add_button(
+        "Quit the application",
+        "&Quit",
+        Action::Quit,
+        sender,
+        &mut column,
+    );
     column.set_size(&copy_input, BUTTON_HEIGHT);
     column.set_size(&preview_frame, BUTTON_HEIGHT * 3);
     column.end();
@@ -171,12 +211,14 @@ fn add_right_column(
 }
 
 fn add_button(
+    tooltip: &str,
     label: &str,
     action: Action,
     sender: fltk::app::Sender<Action>,
     column: &mut fltk::group::Flex,
 ) {
     let mut button = fltk::button::Button::default().with_label(label);
+    button.set_tooltip(tooltip);
     button.visible_focus(false);
     button.set_callback(move |_| {
         sender.send(action);
@@ -184,7 +226,7 @@ fn add_button(
     column.set_size(&button, BUTTON_HEIGHT);
 }
 
-fn populate_history_menu_button(
+pub(crate) fn populate_history_menu_button(
     history_menu_button: &mut fltk::menu::MenuButton,
     sender: fltk::app::Sender<Action>,
 ) {

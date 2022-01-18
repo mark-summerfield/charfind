@@ -1,8 +1,3 @@
-# TODO try to refactor
-# config read_general_properties() to call
-#   read_with_defaults<T>(deque: &mut VecDec<T>, defaults: &[T])
-# TODO implement on_add_char(): add to copy_input & add_to_history()
-
 # TODO
 # * git mv preprocessunidata.py preprocessunidata-txt.py
 # * cp preprocessunidata-txt.py preprocessunidata.py
@@ -13,9 +8,8 @@
 #   keywords _and_ the <char> blk (block) in the keywords. For the
 #   block, split on '_'.
 
-# TODO when a table row is double-clicked send AddFromTable
-# TODO implement Copy (to clipboard) button
-# TODO write new help text (including -ignores)
+# TODO write new help text (including word (required) -word (unwanted)
+# aword? bword? (at least one of))
 
 src/main.rs
 src/config.rs

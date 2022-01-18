@@ -79,37 +79,37 @@ pub fn string_for_codepoint(cp: u32) -> String {
     }
 }
 
-pub fn add_to_history(x: char) -> bool {
+pub fn add_to_history(c: char) -> bool {
     {
         let config = CONFIG.get().read().unwrap();
-        if config.history.contains(&x) {
+        if config.history.contains(&c) {
             return false;
         }
     }
     let mut config = CONFIG.get().write().unwrap();
-    config.history.push_front(x);
+    config.history.push_front(c);
     config.history.truncate(AUTO_MENU_SIZE);
     true
 }
 
-pub fn add_to_searches(x: &str) -> bool {
-    let x = x.to_string();
+pub fn add_to_searches(s: &str) -> bool {
+    let s = s.to_string();
     {
         let config = CONFIG.get().read().unwrap();
-        if config.searches.contains(&x) {
+        if config.searches.contains(&s) {
             return false;
         }
     }
     let mut config = CONFIG.get().write().unwrap();
     if let Some(front) = config.searches.front_mut() {
-        if x.starts_with(front.as_str())
-            || levenshtein::levenshtein(&x, front.as_str()) < 2
+        if s.starts_with(front.as_str())
+            || levenshtein::levenshtein(&s, front.as_str()) < 2
         {
-            *front = x;
+            *front = s;
             return true;
         }
     }
-    config.searches.push_front(x);
+    config.searches.push_front(s);
     config.searches.truncate(AUTO_MENU_SIZE);
     true
 }
