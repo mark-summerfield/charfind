@@ -78,7 +78,7 @@ fn add_top_row(
     find_label.set_callback({
         let mut find_combo = find_combo.clone();
         move |_| {
-            find_combo.take_focus().unwrap();
+            find_combo.take_focus().unwrap_or_default();
         }
     });
     row.set_size(&find_label, BUTTON_WIDTH);

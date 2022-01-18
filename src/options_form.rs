@@ -122,7 +122,7 @@ fn make_row(
     label.set_callback({
         let mut spinner = spinner.clone();
         move |_| {
-            spinner.take_focus().unwrap();
+            spinner.take_focus().unwrap_or_default();
         }
     });
     spinner

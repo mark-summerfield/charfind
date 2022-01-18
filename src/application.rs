@@ -30,7 +30,7 @@ impl Application {
         let mut widgets = main_window::make(sender);
         main_window::add_event_handlers(&mut widgets.main_window, sender);
         widgets.main_window.show();
-        Self {
+        let mut app = Self {
             app,
             main_window: widgets.main_window,
             find_combo: widgets.find_combo,
@@ -42,7 +42,9 @@ impl Application {
             chardata: None,
             sender,
             receiver,
-        }
+        };
+        app.on_startup();
+        app
     }
 
     pub fn run(&mut self) {
@@ -55,7 +57,7 @@ impl Application {
                     Action::AddChar(c) => self.on_add_char(c),
                     Action::AddFromTable => self.on_add_from_table(),
                     Action::FocusToSearchResults => {
-                        self.browser.take_focus().unwrap()
+                        self.browser.take_focus().unwrap_or_default()
                     }
                     Action::UpdatePreview => self.on_update_preview(),
                     Action::Options => self.on_options(),
@@ -64,6 +66,16 @@ impl Application {
                     Action::Quit => self.on_quit(),
                 }
             }
+        }
+    }
+
+    fn on_startup(&mut self) {
+        if self.find_combo.menu_button().size() > 0 {
+            self.on_search_for(0);
+            let mut input = self.find_combo.input();
+            input.set_position(0).unwrap_or_default();
+            input.set_mark(input.text_size()).unwrap_or_default();
+            input.take_focus().unwrap_or_default();
         }
     }
 }

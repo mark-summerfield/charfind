@@ -50,10 +50,12 @@ pub struct Pos {
 impl Pos {
     pub const INVALID: i32 = -1;
 
+    #[allow(dead_code)]
     pub fn new(x: i32, y: i32) -> Self {
         Self { x, y }
     }
 
+    #[allow(dead_code)]
     pub fn is_valid(&self) -> bool {
         self.x != Pos::INVALID && self.y != Pos::INVALID
     }

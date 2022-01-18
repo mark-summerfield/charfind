@@ -33,7 +33,7 @@ impl Application {
                 let (cp, desc, keywords) = self.get_unicode_data(line);
                 if (cp != 0 && (cp == cp1 || cp == cp2))
                     || (keywords.intersection(&none_of).count() == 0
-                        && (any_of.len() == 0
+                        && (any_of.is_empty()
                             || keywords.intersection(&any_of).count() > 0)
                         && keywords.intersection(&all_of).count()
                             == all_of.len())
@@ -85,12 +85,10 @@ impl Application {
             for word in line.split_whitespace() {
                 if let Some(word) = word.strip_suffix('?') {
                     any_of.insert(word.to_uppercase());
+                } else if let Some(word) = word.strip_prefix('-') {
+                    none_of.insert(word.to_uppercase());
                 } else {
-                    if let Some(word) = word.strip_prefix('-') {
-                        none_of.insert(word.to_uppercase());
-                    } else {
-                        all_of.insert(word.to_uppercase());
-                    }
+                    all_of.insert(word.to_uppercase());
                 }
             }
             (all_of, any_of, none_of)
@@ -160,13 +158,13 @@ impl Application {
     fn get_selected_char(&mut self) -> Option<char> {
         if let Some(text) = self.browser.selected_text() {
             let parts: Vec<&str> = text.split('\t').collect();
-            if parts.len() > 0 {
+            if !parts.is_empty() {
                 let field = parts[0];
                 if field.ends_with("Char") {
                     return None; // Title row
                 }
-                if field.len() > 0 {
-                    return Some(field.chars().last().unwrap());
+                if !field.is_empty() {
+                    return field.chars().last();
                 }
             }
         }
