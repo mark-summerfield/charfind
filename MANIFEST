@@ -1,8 +1,3 @@
-# TODO
-# OLD: +word  word   -word
-# NEW:  word  word?  -word
-# i.e., the default is AND; one word? is the same as a plain word
-
 # TODO try to refactor
 # config read_general_properties() to call
 #   read_with_defaults<T>(deque: &mut VecDec<T>, defaults: &[T])
@@ -35,7 +30,7 @@ src/util.rs
 Cargo.toml
 
 README.md
-help.html
+data/help.html
 st.sh
 
 deploy.sh

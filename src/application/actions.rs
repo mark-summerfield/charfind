@@ -82,13 +82,13 @@ impl Application {
             let mut any_of = WordSet::new();
             let mut none_of = WordSet::new();
             for word in line.split_whitespace() {
-                if let Some(word) = word.strip_prefix('+') {
-                    all_of.insert(word.to_uppercase());
+                if let Some(word) = word.strip_suffix('?') {
+                    any_of.insert(word.to_uppercase());
                 } else {
                     if let Some(word) = word.strip_prefix('-') {
                         none_of.insert(word.to_uppercase());
                     } else {
-                        any_of.insert(word.to_uppercase());
+                        all_of.insert(word.to_uppercase());
                     }
                 }
             }
