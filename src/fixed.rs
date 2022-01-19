@@ -35,6 +35,7 @@ pub enum Action {
     Options,
     Quit,
     Search,
+    PopupSearches,
     SearchFor(i32),
     UpdatePreview,
 }
@@ -49,6 +50,8 @@ pub fn about_html() -> String {
     format!(
         "<p><center><font size=6 color=navy><b>{}</b> v{}</font>
 </center></p>
+<p><center><font color=navy size=5>An application for finding Unicode
+characters.</font></center></p>
 <p><center><font size=4>
 <a href=\"https://github.com/mark-summerfield/charfind\">https://github.com/mark-summerfield/charfind</a>
 </font></center></p>

@@ -205,7 +205,7 @@ impl Application {
     }
 
     pub(crate) fn on_about(&mut self) {
-        html_form::Form::new("About", &about_html(), true, 480, 280, false);
+        html_form::Form::new("About", &about_html(), true, 500, 280, false);
     }
 
     pub(crate) fn on_help(&mut self) {

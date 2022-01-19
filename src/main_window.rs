@@ -107,14 +107,8 @@ fn initialize_find_combo(
         {
             return false;
         }
-        if event == fltk::enums::Event::KeyUp {
-            if fltk::app::event_key() == fltk::enums::Key::F2 {
-                find_combo.menu_button().popup();
-                return true;
-            }
-            if find_combo.changed() {
-                sender.send(Action::Search);
-            }
+        if event == fltk::enums::Event::KeyUp && find_combo.changed() {
+            sender.send(Action::Search);
         }
         false
     });
@@ -286,6 +280,10 @@ pub fn add_event_handlers(
         fltk::enums::Event::KeyUp => match fltk::app::event_key() {
             fltk::enums::Key::Help | fltk::enums::Key::F1 => {
                 sender.send(Action::Help);
+                true
+            }
+            fltk::enums::Key::F2 => {
+                sender.send(Action::PopupSearches);
                 true
             }
             fltk::enums::Key::F3 => {

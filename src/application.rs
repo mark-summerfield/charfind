@@ -59,6 +59,10 @@ impl Application {
                     Action::FocusToSearchResults => {
                         self.browser.take_focus().unwrap_or_default()
                     }
+                    Action::PopupSearches => {
+                        self.find_combo.take_focus().unwrap_or_default();
+                        self.find_combo.menu_button().popup();
+                    }
                     Action::UpdatePreview => self.on_update_preview(),
                     Action::Options => self.on_options(),
                     Action::About => self.on_about(),
