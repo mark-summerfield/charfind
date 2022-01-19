@@ -121,7 +121,7 @@ impl Application {
         let cols = line.split('\t').collect::<Vec<&str>>();
         let cp = cols[0].parse::<u32>().unwrap_or(0);
         let keywords = cols[2]
-            .split('\x0C')
+            .split('\x0B') // \v VT
             .map(|s| s.to_owned())
             .collect::<WordSet>();
         (cp, cols[1].to_string(), keywords)

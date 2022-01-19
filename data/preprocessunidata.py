@@ -34,7 +34,7 @@ def main():
                 if keywords & {'ACCENT', 'COMBINING', 'MODIFIER',
                                'PRIVATE', 'VARIATION'}:
                     continue
-                keywords = '\f'.join(sorted(keywords))
+                keywords = '\v'.join(sorted(keywords))
                 outfile.write(f'{codepoint}\t{description}\t{keywords}\n')
     print('wrote', OUTFILE)
 
