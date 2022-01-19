@@ -19,6 +19,7 @@ pub struct Config {
     pub filename: std::path::PathBuf,
     pub searches: VecDeque<String>,
     pub history: VecDeque<char>,
+    pub copy_text: String,
 }
 
 impl Config {
@@ -38,7 +39,14 @@ impl Config {
         config
     }
 
-    pub fn save(&self, x: i32, y: i32, width: i32, height: i32) {
+    pub fn save(
+        &self,
+        x: i32,
+        y: i32,
+        width: i32,
+        height: i32,
+        copy_input: &str,
+    ) {
         if self.filename.to_string_lossy() == "" {
             self.warning("failed to save configuration: no filename");
         } else {
@@ -50,7 +58,8 @@ impl Config {
                 .set(HEIGHT_KEY, height.to_string())
                 .set(SCALE_KEY, fltk::app::screen_scale(0).to_string());
             ini.with_section(Some(GENERAL_SECTION))
-                .set(HISTORY_KEY, self.history_str());
+                .set(HISTORY_KEY, self.history_str())
+                .set(COPY_TEXT_KEY, copy_input);
             self.save_searches(&mut ini);
             match ini.write_to_file(&self.filename) {
                 Ok(_) => {}
@@ -109,6 +118,7 @@ impl Default for Config {
                 DEFAULT_SEARCHES.map(|s| s.to_string()),
             ),
             history: VecDeque::from(DEFAULT_HISTORY),
+            copy_text: String::new(),
         }
     }
 }
@@ -162,6 +172,9 @@ fn read_general_properties(
     properties: &ini::Properties,
     config: &mut Config,
 ) {
+    if let Some(value) = properties.get(COPY_TEXT_KEY) {
+        config.copy_text = value.to_string();
+    }
     config.history.clear();
     if let Some(value) = properties.get(HISTORY_KEY) {
         if !value.is_empty() {
@@ -217,3 +230,4 @@ static SCALE_KEY: &str = "scale";
 static GENERAL_SECTION: &str = "General";
 static HISTORY_KEY: &str = "history";
 static SEARCH_KEY: &str = "search";
+static COPY_TEXT_KEY: &str = "copy";

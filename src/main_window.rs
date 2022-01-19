@@ -164,7 +164,12 @@ fn add_right_column(
         sender,
         &mut column,
     );
+    let copy_text = {
+        let config = CONFIG.get().read().unwrap();
+        config.copy_text.clone()
+    };
     let mut copy_input = fltk::input::Input::default();
+    copy_input.set_value(&copy_text);
     copy_input.set_tooltip("The output editor: chosen characters are added here and the text here gets copied to the clipboard");
     add_button(
         "Copy the output editor's text to the clipboard",

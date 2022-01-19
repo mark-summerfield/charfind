@@ -220,6 +220,7 @@ impl Application {
             self.main_window.y(),
             self.main_window.width(),
             self.main_window.height(),
+            &self.copy_input.value(),
         );
         self.app.quit();
     }
