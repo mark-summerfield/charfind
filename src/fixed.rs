@@ -41,16 +41,16 @@ pub enum Action {
 
 pub fn about_html() -> String {
     let year = Local::today().year();
-    let year = if year == 2021 {
+    let year = if year == 2022 {
         year.to_string()
     } else {
-        format!("2021-{}", year - 2000)
+        format!("2022-{}", year - 2000)
     };
     format!(
         "<p><center><font size=6 color=navy><b>{}</b> v{}</font>
 </center></p>
 <p><center><font size=4>
-<a href=\"http://www.qtrac.eu/charfind.html\">www.qtrac.eu/charfind.html</a>
+<a href=\"https://github.com/mark-summerfield/charfind\">https://github.com/mark-summerfield/charfind</a>
 </font></center></p>
 <p><center>
 <font size=4 color=green>

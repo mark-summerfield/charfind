@@ -202,6 +202,7 @@ fn add_right_column(
         sender,
         &mut column,
     );
+    fltk::frame::Frame::default().with_size(PAD, PAD);
     add_button(
         "Quit the application",
         "&Quit",
