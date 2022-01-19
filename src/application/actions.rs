@@ -42,6 +42,11 @@ impl Application {
                         n += 1;
                         let bg = if n % 2 == 0 { "@B247" } else { "" };
                         let cp = util::string_for_codepoint(cp);
+                        let c = if c == '@' {
+                            "@@".to_string()
+                        } else {
+                            c.to_string()
+                        };
                         self.browser
                             .insert(n, &format!("{bg}@t{c}\t{cp}\t{desc}"));
                     }
