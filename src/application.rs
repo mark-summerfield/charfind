@@ -74,7 +74,7 @@ impl Application {
             self.on_search_for(0);
             let mut input = self.find_combo.input();
             input.set_position(0).unwrap_or_default();
-            input.set_mark(input.text_size()).unwrap_or_default();
+            input.set_mark(input.maximum_size()).unwrap_or_default();
             input.take_focus().unwrap_or_default();
         }
     }

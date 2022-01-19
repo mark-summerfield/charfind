@@ -69,7 +69,7 @@ fn add_top_row(
     let mut find_label = fltk::button::Button::default();
     find_label.set_frame(fltk::enums::FrameType::NoBox);
     find_label.visible_focus(false);
-    find_label.set_label("&Find:");
+    find_label.set_label("&Search:");
     find_label
         .set_align(fltk::enums::Align::Inside | fltk::enums::Align::Right);
     let mut find_combo = fltk::misc::InputChoice::default();

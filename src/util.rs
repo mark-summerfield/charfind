@@ -95,14 +95,29 @@ pub fn add_to_history(c: char) -> bool {
 }
 
 pub fn add_to_searches(s: &str) -> bool {
-    let s = s.to_string();
-    {
-        let config = CONFIG.get().read().unwrap();
-        if config.searches.contains(&s) {
-            return false;
+    let mut config = CONFIG.get().write().unwrap();
+    if let Some(front) = config.searches.front() {
+        if front == s {
+            return false; // The new string is already the first one
         }
     }
-    let mut config = CONFIG.get().write().unwrap();
+    // If the same as an existing one, move the existing one to the front
+    let mut found = false;
+    let mut i = 0;
+    for t in config.searches.iter() {
+        if t == s {
+            found = true;
+            break;
+        }
+        i += 1;
+    }
+    let s = s.to_string();
+    if found {
+        config.searches.remove(i);
+        config.searches.push_front(s);
+        return true;
+    }
+    // If the first one is almost the same as the new one replace with new
     if let Some(front) = config.searches.front_mut() {
         if s.starts_with(front.as_str())
             || levenshtein::levenshtein(&s, front.as_str()) < 2
