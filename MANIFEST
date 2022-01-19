@@ -1,13 +1,3 @@
-# TODO
-# * git mv preprocessunidata.py preprocessunidata-txt.py
-# * cp preprocessunidata-txt.py preprocessunidata.py
-# * edit preprocessunidata.py to read:
-#       https://www.unicode.org/Public/UCD/latest/ucdxml/ucd.all.flat.zip
-#   In <char> cp is the codepoint, na is the description.
-#   In particular, include _all_ the <name-alias> abbreviations in the
-#   keywords _and_ the <char> blk (block) in the keywords. For the
-#   block, split on '_'.
-
 # TODO write new help text (including word (required) -word (unwanted)
 # aword? bword? (at least one of))
 

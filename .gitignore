@@ -44,3 +44,4 @@ dub.selections.json
 zig-cache
 UnicodeData.txt.gz
 ucd.all.flat.zip
+ucd.nounihan.flat.zip

@@ -3,51 +3,83 @@
 # License: GPLv3
 
 # Unicode data:
-# https://www.unicode.org/Public/UCD/latest/ucd/UnicodeData.txt
+#   https://www.unicode.org/Public/UCD/latest/ucdxml/ucd.nounihan.flat.zip
+#   http://www.unicode.org/reports/tr42/
 
 import gzip
+import io
+import re
 import string
+import time
+import xml.dom.minidom
+import zipfile
 
-
-INFILE = 'UnicodeData.txt.gz'
+INFILE = 'ucd.nounihan.flat.zip'
 OUTFILE = 'chardata.txt.gz'
 
 
 def main():
-    with gzip.open(INFILE, 'rt', encoding='utf-8') as infile:
-        with gzip.open(OUTFILE, 'wt', encoding='utf-8') as outfile:
-            for line in infile:
-                parts = line.split(';')
-                codepoint = int(parts[0], 16)
-                if codepoint < 33:
-                    continue
-                keywords = set()
-                if parts[1] == '<control>':
-                    description = parts[10]
-                    keywords.add('CONTROL')
-                else:
-                    description = parts[1]
-                    keywords |= get_keywords(parts[10])
-                if description.lstrip().startswith('<'):
-                    continue
-                keywords |= get_keywords(description)
-                if keywords & {'ACCENT', 'COMBINING', 'MODIFIER',
-                               'PRIVATE', 'VARIATION'}:
-                    continue
-                keywords = '\v'.join(sorted(keywords))
-                outfile.write(f'{codepoint}\t{description}\t{keywords}\n')
-    print('wrote', OUTFILE)
+    t = time.monotonic()
+    print(f'reading {INFILE} …', flush=True)
+    with zipfile.ZipFile(INFILE) as zinfile:
+        with zinfile.open(INFILE.replace('.zip', '.xml')) as binfile:
+            with io.TextIOWrapper(binfile, 'utf-8') as infile:
+                dom = xml.dom.minidom.parse(infile)
+    print(f'writing {OUTFILE} …', flush=True)
+    with gzip.open(OUTFILE, 'wt', encoding='utf-8') as outfile:
+        for element in dom.getElementsByTagName('char'):
+            try:
+                cp = int(element.getAttribute('cp'), 16)
+            except ValueError:
+                continue
+            if cp < 33:
+                continue
+            ws = element.getAttribute('WSpace')
+            if ws in 'Yy':
+                continue
+            ignore = math = dash = False
+            aliases = set()
+            for subelement in element.getElementsByTagName('name-alias'):
+                kind = subelement.getAttribute('type')
+                if kind in {'control', 'figment'}:
+                    ignore = True
+                    break
+                alias = subelement.getAttribute('alias')
+                if alias:
+                    aliases |= settle(alias)
+            if ignore:
+                continue
+            name = element.getAttribute('na').upper()
+            name1 = element.getAttribute('na1')
+            if not name and name1:
+                name = name1
+            name1 = settle(name1)
+            blocks = settle(element.getAttribute('blk'))
+            if not name and aliases:
+                lst = sorted(aliases, key=lambda a: len(a))
+                name = lst[-1]
+                aliases.discard(name)
+            if not name:
+                continue
+            keywords = blocks | name1 | settle(name)
+            for alias in aliases:
+                keywords |= settle(alias)
+            if math or 'MATHEMATICAL' in keywords:
+                keywords |= {'MATHEMATICAL', 'MATH', 'MATHS'}
+            if dash:
+                keywords |= {'DASH', 'HYPHEN'}
+            keywords -= {'WITH', 'OF'}
+            if keywords & {'ACCENT', 'COMBINING', 'MODIFIER', 'PRIVATE',
+                           'VARIATION'}:
+                continue
+            keywords = '\v'.join(sorted(keywords))
+            outfile.write(f'{cp}\t{name}\t{keywords}\n')
+    print(f'wrote {OUTFILE} • {time.monotonic() - t:.01f} secs', flush=True)
 
 
-def get_keywords(part):
-    words = set()
-    for word in part.split():
-        word = word.strip(STRIP_CHARS)
-        words.add(word)
-        if word == 'MATHEMATICAL':
-            words |= {'MATH', 'MATHS'}
-    words -= {'WITH', 'OF'}
-    return words
+def settle(text):
+    return set([word.strip(STRIP_CHARS)
+                for word in re.split(r'[-_\s]+', text.upper()) if word])
 
 
 STRIP_CHARS = string.punctuation + string.whitespace
