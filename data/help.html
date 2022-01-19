@@ -1,47 +1,59 @@
-<!--
-NOTE
-The Find text consists of one or more required words, plain words,
-unwanted words, and code points.
-Examples:
-arrow matches any character whose description includes "arrow"
-arrow left matches any character whose description includes "arrow" _and_
-     "left"
-arrow left? right? matches any character whose description includes
-     "arrow" _and_ _either_ "left" _or_ "right"
-2026 matches any character whose codepoint is 2026 decimal or 0x07EA
-     hexadecimal (since 07EA base 16 = 2026 base 10).
-In general it should work as expected: use word for required, 
-word? for optional (but at least one of these must match), -word for
-unwanted. And to look up by codepoint just enter the decimal or
-hexadecimal value.
--->
 <body>
 <p><center><font color=navy size=6><b>CharFind</b></font></center></p>
-<font color=blue size=5>The purpose of the game is to remove all the
-tiles.</font>
+<font color=blue size=5>CharFind is an application for finding Unicode
+characters.</font>
 <p>
 <font color=#008000 size=4>
-Click a tile that has at least one vertically or horizontally adjoining tile
-of the same color to remove it and any vertically or horizontally adjoining
-tiles of the same color, and <i>their</i> vertically or horizontally
-adjoining tiles, and so on. <i>(So clicking a tile with no adjoining tiles
-of the same color does nothing.)</i> The more tiles that are removed in one
-go, the higher the score.
+Enter a Search term (one or more characters or words) to find matching
+Unicode characters.
+</font>
+</p>
+<p>
+<font color=#008000 size=4>
+Any number of search terms can be entered, and each term is one of three
+kinds. For example a single search term, say, <tt>arrow</tt>, will match
+all characters that have <i>arrow</i> in their metadata. Compare this
+with the multiple search term, say,
+<tt>arrow -down -up -north -south left? right?</tt> which means: match
+all characters that have <i>arrow</i> in their metadata but which do
+<b>not</b> have <i>down</i>, <i>up</i>, <i>north</i>, or <i>south</i>,
+and which have <b>either</b> <i>left</i> or <i>right</i> (or both).
+</font>
+</p>
+<p>
+<font color=#008000 size=4>
+So, to match a complete search term, <i>every</i> plain word,
+<tt>word</tt>, must be in the metadata, but <i>none</i> of any negated
+words, <tt>-word</tt>, and at least one of any optional words,
+<tt>word?</tt>.
+</font>
+</p>
+<p>
+<font color=#008000 size=4>
+Finally, a search term can be a decimal or hexadecimal Unicode code
+point. For example, <tt>2022</tt> will match both a bullet <i>•</i>
+(whose code point is U+2022) and a character <i>ߦ</i> (whose code point
+is U+07E6 but decimal number is 2022).
 </font>
 </p>
 <table border=1 align=center>
 <font color=blue>
 <tr><th>Key</th><th>Action</th></tr>
-<tr><td><b>a</b></td><td>Show About box</td></tr>
-<tr><td><b>h</b> or <b>F1</b></td><td>Show this Help window</td></tr>
-<tr><td><b>n</b></td><td>New Game</td></tr>
-<tr><td><b>o</b></td><td>View or Edit Options</td></tr>
-<tr><td><b>q</b> or <b>Esc</b></td><td>Quit</td></tr>
-<tr><td><b>←</b></td><td>Move the focus left</td></tr>
-<tr><td><b>→</b></td><td>Move the focus right</td></tr>
-<tr><td><b>↑</b></td><td>Move the focus up</td></tr>
-<tr><td><b>↓</b></td><td>Move the focus down</td></tr>
-<tr><td><b>Space</b></td><td>Click the focused tile</td></tr>
+<tr><td><b>F1</b></td><td>Show this Help window</td></tr>
+<tr><td><b>F2</b></td><td>Pop up the Recent Searches (only if the focus
+is in the Search box)</td></tr>
+<tr><td><b>F3</b></td><td>Move the keyboard focus to the Search
+Results</td></tr>
+<tr><td><b>Alt+A</b></td><td>Add the Character from the highlighted row
+in the Search Results to the Output Editor</td></tr>
+<tr><td><b>Alt+B</b></td><td>Show the About box</td></tr>
+<tr><td><b>Alt+H</b></td><td>Pop up the Recently Added Characters</td></tr>
+<tr><td><b>Alt+C</b></td><td>Copy the text from the Output Editor to the
+clipboard</td></tr>
+<tr><td><b>Alt+O</b></td><td>Show the Options dialog</td></tr>
+<tr><td><b>Alt+Q</b> or <b>Esc</b></td><td>Quit the application</td></tr>
+<tr><td><b>Alt+S</b></td><td>Move the keyboard focus to the Search
+box</td></tr>
 </font>
 </table>
 </body>

@@ -3,8 +3,6 @@
 CharFind is an application for finding Unicode characters written in
 Rust/FLTK.
 
-*Warning: Work in Progress*
-
 Tested on Linux and Windows.
 
 ![Screenshot](screenshot.png)

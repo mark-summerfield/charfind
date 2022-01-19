@@ -1,12 +1,12 @@
 [package]
 name = "charfind"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2021"
-publish = false # TODO
+publish = false
 authors = [ "Mark Summerfield <mark@qtrac.eu>",]
 include = [ "Cargo.toml", "src/**/*.rs", "images/*", "data/*"]
-description = "" # TODO
-homepage = "https://github.com/mark-summerfield/charfind" # TODO
+description = "CharFind is an application for finding Unicode characters"
+homepage = "https://github.com/mark-summerfield/charfind"
 readme = "README.md"
 keywords = [ "fltk"]
 categories = [ ]
