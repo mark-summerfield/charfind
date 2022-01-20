@@ -1,14 +1,13 @@
 # CharFind
 
-CharFind is an application for finding Unicode characters written in
-Rust/FLTK.
+CharFind is an application for finding Unicode characters.
 
 Tested on Linux and Windows.
 
 ![Screenshot](screenshot.png)
 
 `charfind.exe` *is a precompiled Windows binary that should run on any
-64-bit version of Windows* (1.9MB; MD5 9431b0cf8bf5a7e2865ad9f39dba83fe)
+64-bit version of Windows* (1.9MB; MD5 ef4cb6f56cd6be0fb5e48725c25b34d1)
 
 ## Dependencies
 

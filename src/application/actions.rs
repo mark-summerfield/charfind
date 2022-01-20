@@ -42,14 +42,14 @@ impl Application {
                         n += 1;
                         let bg = if n % 2 == 0 { "@B247" } else { "" };
                         let cp = util::string_for_codepoint(cp);
-                        let c = if c == '@' {
-                            "@@".to_string()
-                        } else {
-                            c.to_string()
-                        };
                         let desc = desc.to_lowercase();
-                        self.browser
-                            .insert(n, &format!("{bg}@t{c}\t{cp}\t{desc}"));
+                        self.browser.insert(
+                            n,
+                            &format!(
+                                "{bg}@F{}@.{c}\t{cp}\t{desc}",
+                                self.browser_font_index
+                            ),
+                        );
                     }
                 }
             }
@@ -63,7 +63,8 @@ impl Application {
             self.browser.insert(
                 1,
                 &format!(
-                    "@C7@B136@t@bChar\tU+HHHH\tDescription ({} match{s})",
+                    "@C7@B58@F{}@.Char\tU+HHHH\tDescription ({} match{s})",
+                    self.browser_font_index,
                     n.separate_with_commas(),
                 ),
             );
