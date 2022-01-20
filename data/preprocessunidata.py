@@ -8,21 +8,35 @@
 
 import gzip
 import io
+import os
 import re
 import string
+import tempfile
 import time
+import urllib.parse
 import xml.dom.minidom
 import zipfile
 
-INFILE = 'ucd.nounihan.flat.zip'
+import requests
+
+URL = ('https://www.unicode.org/Public/UCD/latest/ucdxml/'
+       'ucd.nounihan.flat.zip')
+INFILE = os.path.join(tempfile.gettempdir(),
+                      os.path.basename(urllib.parse.urlparse(URL).path))
 OUTFILE = 'chardata.txt.gz'
 
 
 def main():
     t = time.monotonic()
+    if not os.path.exists(INFILE):
+        print(f'downloading {URL} …', flush=True)
+        reply = requests.get(URL)
+        with open(INFILE, 'wb') as file:
+            file.write(reply.content)
     print(f'reading {INFILE} …', flush=True)
     with zipfile.ZipFile(INFILE) as zinfile:
-        with zinfile.open(INFILE.replace('.zip', '.xml')) as binfile:
+        xmlfile = os.path.basename(INFILE).replace('.zip', '.xml')
+        with zinfile.open(xmlfile) as binfile:
             with io.TextIOWrapper(binfile, 'utf-8') as infile:
                 dom = xml.dom.minidom.parse(infile)
     print(f'writing {OUTFILE} …', flush=True)
