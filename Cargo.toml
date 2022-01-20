@@ -2,7 +2,7 @@
 name = "charfind"
 version = "1.0.0"
 edition = "2021"
-publish = false
+publish = true
 authors = [ "Mark Summerfield <mark@qtrac.eu>",]
 include = [ "Cargo.toml", "src/**/*.rs", "images/*", "data/*"]
 description = "CharFind is an application for finding Unicode characters"
