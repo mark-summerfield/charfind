@@ -1,6 +1,6 @@
 [package]
 name = "charfind"
-version = "1.1.0"
+version = "1.2.0"
 edition = "2021"
 publish = true
 authors = [ "Mark Summerfield <mark@qtrac.eu>",]
@@ -23,6 +23,11 @@ rustc_version_runtime = "0.2.*"
 state = "^0.5"
 thousands = "^0.2.0"
 
+[dependencies.fltk]
+version = "^1.2"
+features = [ "no-pango",]
+git = "https://github.com/fltk-rs/fltk-rs"
+
 [badges.maintenance]
 status = "passively-maintained"
 
@@ -30,8 +35,3 @@ status = "passively-maintained"
 opt-level = "z"
 lto = true
 codegen-units = 1
-
-[dependencies.fltk]
-version = "^1.2"
-features = [ "no-pango",]
-git = "https://github.com/fltk-rs/fltk-rs"

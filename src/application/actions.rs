@@ -210,7 +210,14 @@ impl Application {
     }
 
     pub(crate) fn on_options(&mut self) {
-        options_form::Form::default();
+        let form = options_form::Form::default();
+        if *form.ok.borrow() {
+            util::populate_find_combo(&mut self.find_combo, self.sender);
+            main_window::populate_history_menu_button(
+                &mut self.history_menu_button,
+                self.sender,
+            );
+        }
     }
 
     pub(crate) fn on_about(&mut self) {

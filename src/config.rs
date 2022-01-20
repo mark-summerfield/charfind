@@ -18,7 +18,9 @@ pub struct Config {
     pub window_scale: f32,
     pub filename: std::path::PathBuf,
     pub searches: VecDeque<String>,
+    pub searches_size: usize,
     pub history: VecDeque<char>,
+    pub history_size: usize,
     pub copy_text: String,
 }
 
@@ -59,6 +61,8 @@ impl Config {
                 .set(SCALE_KEY, fltk::app::screen_scale(0).to_string());
             ini.with_section(Some(GENERAL_SECTION))
                 .set(HISTORY_KEY, self.history_str())
+                .set(HISTORY_SIZE_KEY, self.history_size.to_string())
+                .set(SEARCH_SIZE_KEY, self.searches_size.to_string())
                 .set(COPY_TEXT_KEY, copy_input);
             self.save_searches(&mut ini);
             match ini.write_to_file(&self.filename) {
@@ -117,7 +121,9 @@ impl Default for Config {
             searches: VecDeque::from(
                 DEFAULT_SEARCHES.map(|s| s.to_string()),
             ),
+            searches_size: AUTO_MENU_SIZE,
             history: VecDeque::from(DEFAULT_HISTORY),
+            history_size: AUTO_MENU_SIZE,
             copy_text: String::new(),
         }
     }
@@ -175,6 +181,10 @@ fn read_general_properties(
     if let Some(value) = properties.get(COPY_TEXT_KEY) {
         config.copy_text = value.to_string();
     }
+    if let Some(value) = properties.get(HISTORY_SIZE_KEY) {
+        config.history_size =
+            util::get_num(value, 2, AUTO_MENU_SIZE, config.history_size)
+    }
     config.history.clear();
     if let Some(value) = properties.get(HISTORY_KEY) {
         if !value.is_empty() {
@@ -197,6 +207,10 @@ fn read_general_properties(
                 }
             }
         }
+    }
+    if let Some(value) = properties.get(SEARCH_SIZE_KEY) {
+        config.searches_size =
+            util::get_num(value, 2, AUTO_MENU_SIZE, config.searches_size)
     }
     config.searches.clear();
     for i in 1..=AUTO_MENU_SIZE {
@@ -229,5 +243,7 @@ static HEIGHT_KEY: &str = "height";
 static SCALE_KEY: &str = "scale";
 static GENERAL_SECTION: &str = "General";
 static HISTORY_KEY: &str = "history";
+static HISTORY_SIZE_KEY: &str = "history-size";
 static SEARCH_KEY: &str = "search";
+static SEARCH_SIZE_KEY: &str = "search-size";
 static COPY_TEXT_KEY: &str = "copy";

@@ -3,8 +3,8 @@
 
 use super::CONFIG;
 use crate::fixed::{
-    Action, APPNAME, A_TO_Z, BUTTON_HEIGHT, BUTTON_WIDTH, ICON, PAD,
-    ROW_HEIGHT, WINDOW_HEIGHT_MIN, WINDOW_WIDTH_MIN,
+    Action, APPNAME, A_TO_Z, BUTTON_HEIGHT, BUTTON_WIDTH, ICON,
+    ONE_TO_NINE, PAD, ROW_HEIGHT, WINDOW_HEIGHT_MIN, WINDOW_WIDTH_MIN,
 };
 use crate::util;
 use fltk::prelude::*;
@@ -241,9 +241,14 @@ pub(crate) fn populate_history_menu_button(
 ) {
     history_menu_button.clear();
     let config = CONFIG.get().read().unwrap();
+    let limit = config.history_size;
+    let letters = if limit < 10 { ONE_TO_NINE } else { A_TO_Z };
     for (i, c) in config.history.iter().enumerate() {
+        if i == limit {
+            break;
+        }
         history_menu_button.add_emit(
-            &format!("&{}  {c}", A_TO_Z[i]),
+            &format!("&{}  {c}", letters[i]),
             fltk::enums::Shortcut::None,
             fltk::menu::MenuFlag::Normal,
             sender,

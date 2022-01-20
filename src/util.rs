@@ -2,7 +2,7 @@
 // License: GPLv3
 
 use super::CONFIG;
-use crate::fixed::{Action, AUTO_MENU_SIZE, A_TO_Z};
+use crate::fixed::{Action, AUTO_MENU_SIZE, A_TO_Z, ONE_TO_NINE};
 use fltk::prelude::*;
 use std::{cmp, fmt, str};
 
@@ -137,9 +137,14 @@ pub fn populate_find_combo(
 ) {
     find_combo.clear();
     let config = CONFIG.get().read().unwrap();
+    let limit = config.searches_size;
+    let letters = if limit < 10 { ONE_TO_NINE } else { A_TO_Z };
     for (i, s) in config.searches.iter().enumerate() {
+        if i == limit {
+            break;
+        }
         find_combo.menu_button().add_emit(
-            &format!("&{} {s}", A_TO_Z[i]),
+            &format!("&{} {s}", letters[i]),
             fltk::enums::Shortcut::None,
             fltk::menu::MenuFlag::Normal,
             sender,

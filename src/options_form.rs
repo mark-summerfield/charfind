@@ -3,7 +3,8 @@
 
 use super::CONFIG;
 use crate::fixed::{
-    APPNAME, BUTTON_HEIGHT, BUTTON_WIDTH, ICON, PAD, SCALE_MAX, SCALE_MIN,
+    APPNAME, AUTO_MENU_SIZE, BUTTON_HEIGHT, BUTTON_WIDTH, ICON, PAD,
+    SCALE_MAX, SCALE_MIN,
 };
 use crate::util;
 use fltk::prelude::*;
@@ -51,6 +52,8 @@ impl Drop for Form {
 }
 
 struct Spinners {
+    pub searches_size_spinner: fltk::misc::Spinner,
+    pub history_size_spinner: fltk::misc::Spinner,
     pub scale_spinner: fltk::misc::Spinner,
 }
 
@@ -62,7 +65,7 @@ struct Buttons {
 fn make_form() -> fltk::window::Window {
     let image = fltk::image::SvgImage::from_data(ICON).unwrap();
     let mut form = fltk::window::Window::default()
-        .with_size(WIDTH, 120)
+        .with_size(WIDTH, 180)
         .with_label(&format!("Options — {APPNAME}"));
     if let Some(window) = fltk::app::first_window() {
         form.set_pos(window.x() + 50, window.y() + 100);
@@ -87,15 +90,31 @@ fn make_config_row() {
 
 fn make_spinners() -> Spinners {
     let config = CONFIG.get().read().unwrap();
+    let searches_size_spinner = make_row(
+        "&Searches Size",
+        config.searches_size as f64,
+        &format!("The maximum number of searches to keep in the searches menu (default {AUTO_MENU_SIZE})"),
+        2.0,
+        AUTO_MENU_SIZE as f64,
+        1.0,
+    );
+    let history_size_spinner = make_row(
+        "&History Size",
+        config.history_size as f64,
+        &format!("The maximum number of characters to keep in the history menu (default {AUTO_MENU_SIZE})"),
+        2.0,
+        AUTO_MENU_SIZE as f64,
+        1.0,
+    );
     let scale_spinner = make_row(
-        "&Scale",
+        "Sca&le",
         config.window_scale as f64,
         "User interface scale (default 1.0)",
         SCALE_MIN as f64,
         SCALE_MAX as f64,
         0.1,
     );
-    Spinners { scale_spinner }
+    Spinners { searches_size_spinner, history_size_spinner, scale_spinner }
 }
 
 fn make_row(
@@ -118,6 +137,7 @@ fn make_row(
     spinner.set_step(step);
     spinner.set_range(minimum, maximum);
     spinner.set_tooltip(tooltip);
+    spinner.set_wrap(false);
     row.end();
     label.set_callback({
         let mut spinner = spinner.clone();
@@ -149,6 +169,8 @@ fn add_event_handlers(
     ok: Rc<RefCell<bool>>,
 ) {
     buttons.ok_button.set_callback({
+        let searches_size_spinner = spinners.searches_size_spinner.clone();
+        let history_size_spinner = spinners.history_size_spinner.clone();
         let scale_spinner = spinners.scale_spinner.clone();
         let mut form = form.clone();
         move |_| {
@@ -160,6 +182,8 @@ fn add_event_handlers(
                 config.window_scale = new_scale;
                 fltk::app::set_screen_scale(0, new_scale);
             }
+            config.searches_size = searches_size_spinner.value() as usize;
+            config.history_size =  history_size_spinner.value() as usize;
             form.hide();
         }
     });
