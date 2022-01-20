@@ -6,7 +6,7 @@ use chrono::prelude::*;
 use std::env;
 
 pub static APPNAME: &str = "CharFind";
-pub static VERSION: &str = "1.2.0";
+pub static VERSION: &str = "1.2.1";
 pub static CHARDATA: &[u8] = include_bytes!("../data/chardata.txt.gz");
 pub static HELP_HTML: &str = include_str!("../data/help.html");
 pub const ICON: &str = include_str!("../images/charfind.svg");
@@ -19,15 +19,10 @@ pub const BUTTON_HEIGHT: i32 = 30;
 pub const BUTTON_WIDTH: i32 = 90;
 pub const SCALE_MIN: f32 = 0.5;
 pub const SCALE_MAX: f32 = 3.5;
-pub static A_TO_Z: [char; AUTO_MENU_SIZE] = [
-    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
-    'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-];
-pub static ONE_TO_NINE: [char; AUTO_MENU_SIZE] = [
-    '1', '2', '3', '4', '5', '6', '7', '8', '9', '\u{0000}', '\u{0000}',
-    '\u{0000}', '\u{0000}', '\u{0000}', '\u{0000}', '\u{0000}', '\u{0000}',
-    '\u{0000}', '\u{0000}', '\u{0000}', '\u{0000}', '\u{0000}', '\u{0000}',
-    '\u{0000}', '\u{0000}', '\u{0000}',
+pub static MENU_CHARS: [char; 35] = [
+    '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E',
+    'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',
+    'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
 ];
 
 #[derive(Copy, Clone, Debug)]
