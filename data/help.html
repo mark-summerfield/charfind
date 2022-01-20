@@ -1,65 +1,68 @@
 <body>
 <p><center><font color=navy size=6><b>CharFind</b></font></center></p>
-<font color=blue size=5>CharFind is an application for finding Unicode
-characters.</font>
 <p>
-<font color=#008000 size=4>
+<center><font color=#008000 size=4>
 Enter a Search term to find matching Unicode characters.
-</font>
+</font></center>
 </p>
 <p>
-<font color=#008000 size=4>
+<font size=4>
 Any number of search terms can be entered, and each term is one of three
-kinds. For example a single search term, say, <tt>arrow</tt>, will match
-all characters that have <i>arrow</i> in their metadata. Compare this
-with the multiple search term, say, <tt>arrow -down -up -north -south
-left? right?</tt> which means: match all characters that have
-<i>arrow</i> in their metadata but which do <b>not</b> have <i>down</i>,
-<i>up</i>, <i>north</i>, or <i>south</i>, and which have <b>either</b>
-<i>left</i> or <i>right</i> (or both).
+kinds. For example a single search term, say, <font
+color=blue>arrow</font>, will match <b>all</b> characters that have
+<i>arrow</i> in their metadata. Compare this with the multiple search
+term, say, <font color=blue>arrow left? right? -down -up -north
+-south</font> which means: match <b>all</b> characters that have
+<i>arrow</i> in their metadata <b>and</b> which have <b>either</b>
+<i>left</i> or <i>right</i> (or both), but which do <b>not</b> have any
+of <i>down</i>, <i>up</i>, <i>north</i>, or <i>south</i>.
 </font>
 </p>
 <p>
-<font color=#008000 size=4>
-So, to match a complete search term, <i>every</i> plain word,
-<tt>word</tt>, must be in the metadata, but <i>none</i> of any negated
-words, <tt><b>-</b>word</tt>, and at least one of any optional words,
-<tt>word<b>?</b></tt>.
+<font size=4>
+So, to match a complete search term, <b>every</b> plain word, <font
+color=blue>word</font>, <b>must</b> be in the metadata, <b>and at least
+one of</b> any optional words, <font color=blue>word<b>?</b></font>, but
+<b>none</b> of any negated words, <font color=blue><b>-</b>word</font>.
 </font>
 </p>
 <p>
-<font color=#008000 size=4>
+<font size=4>
 In addition, a search term can be a decimal or hexadecimal Unicode code
-point. For example, <tt>2022</tt> will match both a bullet <i>•</i>
-(whose code point is U+2022) and a character <i>ߦ</i> (whose code point
-is U+07E6 but decimal number is 2022).
+point. For example, <font color=blue>2022</font> will match both a
+bullet <i>•</i> (whose code point is U+2022) and a character <i>ߦ</i>
+(whose code point is U+07E6 but decimal number is 2022).
 </font>
 </p>
 <p>
-<font color=#008000 size=4>
+<font size=4>
 Some initial search terms are provided to help with learning and
 experimentation, see <b>F2</b> below.
 </font>
 </p>
 <table border=1 align=center>
-<font color=blue>
 <tr><th>Key</th><th>Action</th></tr>
+<tr><td><b>Double-Click</b></td><td>Add the character from the
+double-clicked row in the Search Results Table to the Output Editor (if the
+character isn't already the last one there); <i>see also</i>
+<b>Alt+A</b></td></tr>
 <tr><td><b>F1</b></td><td>Show this Help window</td></tr>
 <tr><td><b>F2</b></td><td>Pop up the Recent Searches—and replace the
 current search with the chosen one</td></tr>
 <tr><td><b>F3</b></td><td>Move the keyboard focus to the Search
 Results Table</td></tr>
 <tr><td><b>Alt+A</b></td><td>Add the character from the highlighted row
-in the Search Results Table to the Output Editor</td></tr>
+in the Search Results Table to the Output Editor; <i>see also</i>
+<b>Double-Click</b></td></tr>
 <tr><td><b>Alt+B</b></td><td>Show the About box</td></tr>
 <tr><td><b>Alt+H</b></td><td>Pop up the History of recently added
 characters—and add the chosen one to the Output Editor</td></tr>
 <tr><td><b>Alt+C</b></td><td>Copy the text from the Output Editor to the
 clipboard</td></tr>
+<tr><td><b>Alt+L</b></td><td>Clear the Output Editor</td></tr>
 <tr><td><b>Alt+O</b></td><td>Show the Options dialog</td></tr>
 <tr><td><b>Alt+Q</b> or <b>Esc</b></td><td>Quit the application</td></tr>
 <tr><td><b>Alt+S</b></td><td>Move the keyboard focus to the Search
 box</td></tr>
-</font>
 </table>
 </body>

@@ -64,16 +64,17 @@ def main():
             keywords = blocks | name1 | settle(name)
             for alias in aliases:
                 keywords |= settle(alias)
+            keywords -= {'WITH', 'OF'}
+            if keywords & {'ACCENT', 'COMBINING', 'COMPATIBILITY',
+                           'IDEOGRAPH', 'INDICATOR', 'MODIFIER', 'PRIVATE',
+                           'SYLLABLE', 'VARIATION'}:
+                continue
             if math or 'MATHEMATICAL' in keywords:
                 keywords |= {'MATHEMATICAL', 'MATH', 'MATHS'}
             if dash:
                 keywords |= {'DASH', 'HYPHEN'}
-            keywords -= {'WITH', 'OF'}
-            if keywords & {'ACCENT', 'COMBINING', 'MODIFIER', 'PRIVATE',
-                           'VARIATION'}:
-                continue
             keywords = '\v'.join(sorted(keywords))
-            outfile.write(f'{cp}\t{name}\t{keywords}\n')
+            outfile.write(f'{cp:X}\t{name}\t{keywords}\n')
     print(f'wrote {OUTFILE} • {time.monotonic() - t:.01f} secs', flush=True)
 
 

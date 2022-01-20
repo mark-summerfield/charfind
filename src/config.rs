@@ -93,8 +93,8 @@ impl Config {
 
 static DEFAULT_SEARCHES: [&str; 8] = [
     "arrow",
+    "arrow left? right? -down -up -north -south",
     "arrow -down -up",
-    "arrow -down -up -north -south left? right?",
     "asterisk",
     "block",
     "box",

@@ -1,2 +1,2 @@
 #!/bin/bash
-cp -f $HOME/app/charfind/rs/target/release/charfind $HOME/opt/bin
+cp -f $HOME/app/rs/charfind/target/release/charfind $HOME/opt/bin

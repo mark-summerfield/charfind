@@ -124,7 +124,7 @@ impl Application {
 
     fn get_unicode_data(&self, line: &str) -> (u32, String, WordSet) {
         let cols = line.split('\t').collect::<Vec<&str>>();
-        let cp = cols[0].parse::<u32>().unwrap_or(0);
+        let cp = u32::from_str_radix(cols[0], 16).unwrap_or(0);
         let keywords = cols[2]
             .split('\x0B') // \v VT
             .map(|s| s.to_owned())
@@ -200,6 +200,15 @@ impl Application {
         }
     }
 
+    pub(crate) fn on_maybe_add_from_table(&mut self) {
+        if let Some(c) = self.get_selected_char() {
+            let text = self.copy_input.value();
+            if !text.ends_with(c) {
+                self.on_add_char(c);
+            }
+        }
+    }
+
     pub(crate) fn on_options(&mut self) {
         options_form::Form::default();
     }
@@ -213,7 +222,7 @@ impl Application {
             help_form.show();
         } else {
             self.help_form = Some(html_form::Form::new(
-                "Help", HELP_HTML, false, 380, 420, true,
+                "Help", HELP_HTML, false, 640, 480, true,
             ));
         }
     }

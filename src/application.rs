@@ -54,8 +54,12 @@ impl Application {
                     Action::Search => self.on_search(),
                     Action::SearchFor(i) => self.on_search_for(i),
                     Action::Copy => self.on_copy(),
+                    Action::Clear => self.copy_input.set_value(""),
                     Action::AddChar(c) => self.on_add_char(c),
                     Action::AddFromTable => self.on_add_from_table(),
+                    Action::MaybeAddFromTable => {
+                        self.on_maybe_add_from_table()
+                    }
                     Action::FocusToSearchResults => {
                         self.browser.take_focus().unwrap_or_default()
                     }

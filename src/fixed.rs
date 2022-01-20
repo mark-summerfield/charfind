@@ -6,14 +6,14 @@ use chrono::prelude::*;
 use std::env;
 
 pub static APPNAME: &str = "CharFind";
-pub static VERSION: &str = "0.1.0";
+pub static VERSION: &str = "1.0.0";
 pub static CHARDATA: &[u8] = include_bytes!("../data/chardata.txt.gz");
 pub static HELP_HTML: &str = include_str!("../data/help.html");
 pub const ICON: &str = include_str!("../images/charfind.svg");
 pub const AUTO_MENU_SIZE: usize = 26;
 pub const PAD: i32 = 6;
 pub const WINDOW_WIDTH_MIN: i32 = 400;
-pub const WINDOW_HEIGHT_MIN: i32 = 400;
+pub const WINDOW_HEIGHT_MIN: i32 = 440;
 pub const ROW_HEIGHT: i32 = 40;
 pub const BUTTON_HEIGHT: i32 = 30;
 pub const BUTTON_WIDTH: i32 = 90;
@@ -29,7 +29,9 @@ pub enum Action {
     About,
     AddChar(char),
     AddFromTable,
+    MaybeAddFromTable,
     Copy,
+    Clear,
     FocusToSearchResults,
     Help,
     Options,

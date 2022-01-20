@@ -127,15 +127,17 @@ fn add_middle_row(
     browser.handle(move |browser, event| {
         if browser.has_focus() {
             if event == fltk::enums::Event::KeyUp
-                && fltk::app::event_key().bits() == 32
-            {
-                sender.send(Action::AddFromTable); // Space
-                return true;
-            }
-            if event == fltk::enums::Event::KeyUp
                 || event == fltk::enums::Event::Released
             {
                 sender.send(Action::UpdatePreview);
+            }
+            if fltk::app::event_is_click()
+                && !fltk::app::event_inside_widget(&browser.scrollbar())
+                && fltk::app::event_button() == 1
+                && fltk::app::event_clicks()
+            {
+                sender.send(Action::MaybeAddFromTable);
+                return true;
             }
         }
         false
@@ -169,6 +171,13 @@ fn add_right_column(
         "Copy the output editor's text to the clipboard",
         "&Copy",
         Action::Copy,
+        sender,
+        &mut column,
+    );
+    add_button(
+        "Clear the output editor's",
+        "C&lear",
+        Action::Clear,
         sender,
         &mut column,
     );
