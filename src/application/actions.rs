@@ -47,6 +47,7 @@ impl Application {
                         } else {
                             c.to_string()
                         };
+                        let desc = desc.to_lowercase();
                         self.browser
                             .insert(n, &format!("{bg}@t{c}\t{cp}\t{desc}"));
                     }
