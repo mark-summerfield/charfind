@@ -1,16 +1,27 @@
 [package]
 name = "charfind"
-version = "1.0.0"
+version = "1.1.0"
 edition = "2021"
 publish = true
 authors = [ "Mark Summerfield <mark@qtrac.eu>",]
-include = [ "Cargo.toml", "src/**/*.rs", "images/*", "data/*"]
+include = [ "Cargo.toml", "src/**/*.rs", "images/*", "data/*",]
 description = "CharFind is an application for finding Unicode characters"
 homepage = "https://github.com/mark-summerfield/charfind"
 readme = "README.md"
-keywords = [ "fltk"]
-categories = [ ]
+keywords = [ "fltk",]
+categories = []
 license = "GPL-3.0"
+
+[dependencies]
+chrono = "^0.4"
+dirs = "^4"
+flate2 = "^1"
+levenshtein = "^1.0.5"
+num = "^0.4"
+rust-ini = "^0.17"
+rustc_version_runtime = "0.2.*"
+state = "^0.5"
+thousands = "^0.2.0"
 
 [badges.maintenance]
 status = "passively-maintained"
@@ -20,14 +31,7 @@ opt-level = "z"
 lto = true
 codegen-units = 1
 
-[dependencies]
-chrono = "^0.4"
-dirs = "^4"
-flate2 = "^1"
-fltk = { version = "^1.2", features = ["no-pango",], git = "https://github.com/fltk-rs/fltk-rs" }
-levenshtein = "^1.0.5"
-num = "^0.4"
-rust-ini = "^0.17"
-rustc_version_runtime = "0.2.*"
-state = "^0.5"
-thousands = "^0.2.0"
+[dependencies.fltk]
+version = "^1.2"
+features = [ "no-pango",]
+git = "https://github.com/fltk-rs/fltk-rs"
