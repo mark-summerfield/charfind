@@ -79,8 +79,13 @@ def main():
 
 
 def settle(text):
-    return set([word.strip(STRIP_CHARS)
+    extras = set()
+    words = set([word.strip(STRIP_CHARS)
                 for word in re.split(r'[-_\s]+', text.upper()) if word])
+    for word in words:
+        if len(word) > 5 and word.endswith('WARDS'):
+            extras.add(word[:-5])
+    return words | extras
 
 
 STRIP_CHARS = string.punctuation + string.whitespace
