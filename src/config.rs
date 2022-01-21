@@ -95,7 +95,7 @@ impl Config {
     }
 }
 
-static DEFAULT_SEARCHES: [&str; 8] = [
+static DEFAULT_SEARCHES: [&str; 9] = [
     "arrow",
     "arrow left? right? -down -up -north -south",
     "arrow -down -up",
