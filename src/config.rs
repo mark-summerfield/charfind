@@ -104,6 +104,7 @@ static DEFAULT_SEARCHES: [&str; 8] = [
     "box",
     "symbol greek",
     "symbol -greek",
+    "feed",
 ];
 
 const DEFAULT_HISTORY: [char; 9] =
