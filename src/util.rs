@@ -3,15 +3,19 @@
 
 use super::CONFIG;
 use crate::fixed::{Action, AUTO_MENU_SIZE, MENU_CHARS};
-use fltk::prelude::*;
+use fltk::{
+    app, app::Sender, enums::Shortcut, menu::MenuFlag, misc::InputChoice,
+    prelude::*,
+};
+use levenshtein::levenshtein;
 use std::{cmp, fmt, str};
 
 pub fn x() -> i32 {
-    (fltk::app::screen_size().0 / 2.0) as i32
+    (app::screen_size().0 / 2.0) as i32
 }
 
 pub fn y() -> i32 {
-    (fltk::app::screen_size().1 / 2.0) as i32
+    (app::screen_size().1 / 2.0) as i32
 }
 
 pub fn capitalize_first(s: &str) -> String {
@@ -120,7 +124,7 @@ pub fn add_to_searches(s: &str) -> bool {
     // If the first one is almost the same as the new one replace with new
     if let Some(front) = config.searches.front_mut() {
         if s.starts_with(front.as_str())
-            || levenshtein::levenshtein(&s, front.as_str()) < 2
+            || levenshtein(&s, front.as_str()) < 2
         {
             *front = s;
             return true;
@@ -132,8 +136,8 @@ pub fn add_to_searches(s: &str) -> bool {
 }
 
 pub fn populate_find_combo(
-    find_combo: &mut fltk::misc::InputChoice,
-    sender: fltk::app::Sender<Action>,
+    find_combo: &mut InputChoice,
+    sender: Sender<Action>,
 ) {
     find_combo.clear();
     let config = CONFIG.get().read().unwrap();
@@ -145,8 +149,8 @@ pub fn populate_find_combo(
         }
         find_combo.menu_button().add_emit(
             &format!("&{} {s}", MENU_CHARS[base + i]),
-            fltk::enums::Shortcut::None,
-            fltk::menu::MenuFlag::Normal,
+            Shortcut::None,
+            MenuFlag::Normal,
             sender,
             Action::SearchFor(i as i32),
         );

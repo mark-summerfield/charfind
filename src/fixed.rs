@@ -3,10 +3,11 @@
 
 use crate::util::capitalize_first;
 use chrono::prelude::*;
+use fltk::app;
 use std::env;
 
 pub static APPNAME: &str = "CharFind";
-pub static VERSION: &str = "1.2.2";
+pub static VERSION: &str = "1.2.3";
 pub static CHARDATA: &[u8] = include_bytes!("../data/chardata.txt.gz");
 pub static HELP_HTML: &str = include_str!("../data/help.html");
 pub const ICON: &str = include_str!("../images/charfind.svg");
@@ -71,8 +72,8 @@ Rust {} • fltk-rs {} • FLTK {} • {}/{}
         VERSION,
         year,
         rustc_version_runtime::version(),
-        fltk::app::crate_version(),
-        fltk::app::version_str(),
+        app::crate_version(),
+        app::version_str(),
         capitalize_first(env::consts::OS),
         env::consts::ARCH
     )

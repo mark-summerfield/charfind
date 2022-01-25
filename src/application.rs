@@ -6,29 +6,39 @@ use super::CONFIG;
 use crate::fixed::Action;
 use crate::html_form;
 use crate::main_window;
-use fltk::prelude::*;
+use fltk::{
+    app,
+    app::{channel, App, Receiver, Scheme, Sender},
+    browser::HoldBrowser,
+    enums::Font,
+    frame::Frame,
+    input::Input,
+    menu::MenuButton,
+    misc::InputChoice,
+    prelude::*,
+    window::Window,
+};
 
 pub struct Application {
-    app: fltk::app::App,
-    main_window: fltk::window::Window,
-    find_combo: fltk::misc::InputChoice,
-    history_menu_button: fltk::menu::MenuButton,
-    browser: fltk::browser::HoldBrowser,
+    app: App,
+    main_window: Window,
+    find_combo: InputChoice,
+    history_menu_button: MenuButton,
+    browser: HoldBrowser,
     browser_font_index: usize,
-    copy_input: fltk::input::Input,
-    preview_frame: fltk::frame::Frame,
+    copy_input: Input,
+    preview_frame: Frame,
     help_form: Option<html_form::Form>,
     chardata: Option<String>,
-    sender: fltk::app::Sender<Action>,
-    receiver: fltk::app::Receiver<Action>,
+    sender: Sender<Action>,
+    receiver: Receiver<Action>,
 }
 
 impl Application {
     pub fn new() -> Self {
-        let app = fltk::app::App::default()
-            .with_scheme(fltk::app::Scheme::Gleam)
-            .load_system_fonts();
-        let (sender, receiver) = fltk::app::channel::<Action>();
+        let app =
+            App::default().with_scheme(Scheme::Gleam).load_system_fonts();
+        let (sender, receiver) = channel::<Action>();
         let mut widgets = main_window::make(sender);
         main_window::add_event_handlers(&mut widgets.main_window, sender);
         widgets.main_window.show();
@@ -88,12 +98,12 @@ impl Application {
             input.set_mark(input.maximum_size()).unwrap_or_default();
             input.take_focus().unwrap_or_default();
         }
-        let fonts = fltk::app::fonts();
+        let fonts = app::fonts();
         const INVALID: usize = 99999;
         let mut indexes =
             [INVALID, INVALID, INVALID, INVALID, self.browser_font_index];
         for i in 0..fonts.len() {
-            let font = fltk::enums::Font::by_index(i);
+            let font = Font::by_index(i);
             let name = font.get_name().to_uppercase().replace(' ', "");
             let index = match name.as_str() {
                 // Order is most to least preferred
@@ -108,7 +118,7 @@ impl Application {
         for i in indexes {
             if i != INVALID {
                 self.browser_font_index = i;
-                let font = fltk::enums::Font::by_index(i);
+                let font = Font::by_index(i);
                 self.preview_frame.set_label_font(font);
                 self.copy_input.set_text_font(font);
                 break;

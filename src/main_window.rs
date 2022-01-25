@@ -7,23 +7,36 @@ use crate::fixed::{
     ROW_HEIGHT, WINDOW_HEIGHT_MIN, WINDOW_WIDTH_MIN,
 };
 use crate::util;
-use fltk::prelude::*;
+use fltk::{
+    app,
+    app::Sender,
+    browser::HoldBrowser,
+    button::Button,
+    enums::{Align, Event, FrameType, Key, Shortcut},
+    frame::Frame,
+    group::{Flex, FlexType},
+    image::SvgImage,
+    input::Input,
+    menu::{MenuButton, MenuFlag},
+    misc::InputChoice,
+    prelude::*,
+    window::Window,
+};
 
 pub struct Widgets {
-    pub main_window: fltk::window::Window,
-    pub find_combo: fltk::misc::InputChoice,
-    pub history_menu_button: fltk::menu::MenuButton,
-    pub browser: fltk::browser::HoldBrowser,
-    pub copy_input: fltk::input::Input,
-    pub preview_frame: fltk::frame::Frame,
+    pub main_window: Window,
+    pub find_combo: InputChoice,
+    pub history_menu_button: MenuButton,
+    pub browser: HoldBrowser,
+    pub copy_input: Input,
+    pub preview_frame: Frame,
 }
 
-pub fn make(sender: fltk::app::Sender<Action>) -> Widgets {
-    fltk::window::Window::set_default_xclass(APPNAME);
+pub fn make(sender: Sender<Action>) -> Widgets {
+    Window::set_default_xclass(APPNAME);
     let (main_window, width) = make_main_window();
-    let mut vbox = fltk::group::Flex::default()
-        .size_of_parent()
-        .with_type(fltk::group::FlexType::Column);
+    let mut vbox =
+        Flex::default().size_of_parent().with_type(FlexType::Column);
     vbox.set_margin(PAD);
     let (find_combo, history_menu_button, top_row) =
         add_top_row(sender, width);
@@ -42,37 +55,35 @@ pub fn make(sender: fltk::app::Sender<Action>) -> Widgets {
     }
 }
 
-fn make_main_window() -> (fltk::window::Window, i32) {
-    let icon = fltk::image::SvgImage::from_data(ICON).unwrap();
+fn make_main_window() -> (Window, i32) {
+    let icon = SvgImage::from_data(ICON).unwrap();
     let (x, y, width, height) = get_config_window_rect();
-    let mut main_window =
-        fltk::window::Window::new(x, y, width, height, APPNAME);
+    let mut main_window = Window::new(x, y, width, height, APPNAME);
     main_window.set_icon(Some(icon));
     main_window.size_range(
         WINDOW_WIDTH_MIN,
         WINDOW_HEIGHT_MIN,
-        fltk::app::screen_size().0 as i32,
-        fltk::app::screen_size().1 as i32,
+        app::screen_size().0 as i32,
+        app::screen_size().1 as i32,
     );
     main_window.make_resizable(true);
     (main_window, width)
 }
 
 fn add_top_row(
-    sender: fltk::app::Sender<Action>,
+    sender: Sender<Action>,
     width: i32,
-) -> (fltk::misc::InputChoice, fltk::menu::MenuButton, fltk::group::Flex) {
-    let mut row = fltk::group::Flex::default()
+) -> (InputChoice, MenuButton, Flex) {
+    let mut row = Flex::default()
         .with_size(width, ROW_HEIGHT)
-        .with_type(fltk::group::FlexType::Row);
+        .with_type(FlexType::Row);
     row.set_margin(PAD);
-    let mut find_label = fltk::button::Button::default();
-    find_label.set_frame(fltk::enums::FrameType::NoBox);
+    let mut find_label = Button::default();
+    find_label.set_frame(FrameType::NoBox);
     find_label.visible_focus(false);
     find_label.set_label("&Search:");
-    find_label
-        .set_align(fltk::enums::Align::Inside | fltk::enums::Align::Right);
-    let mut find_combo = fltk::misc::InputChoice::default();
+    find_label.set_align(Align::Inside | Align::Right);
+    let mut find_combo = InputChoice::default();
     initialize_find_combo(&mut find_combo, sender);
     util::populate_find_combo(&mut find_combo, sender);
     find_label.set_callback({
@@ -83,7 +94,7 @@ fn add_top_row(
     });
     row.set_size(&find_label, BUTTON_WIDTH);
     let mut history_menu_button =
-        fltk::menu::MenuButton::default().with_label("&History");
+        MenuButton::default().with_label("&History");
     history_menu_button.set_tooltip(
         "Add a previously added character to the output editor",
     );
@@ -94,8 +105,8 @@ fn add_top_row(
 }
 
 fn initialize_find_combo(
-    find_combo: &mut fltk::misc::InputChoice,
-    sender: fltk::app::Sender<Action>,
+    find_combo: &mut InputChoice,
+    sender: Sender<Action>,
 ) {
     find_combo
         .set_tooltip("Find every 'word' and at least one of 'aword? bword?' but not any '-word's");
@@ -107,7 +118,7 @@ fn initialize_find_combo(
         {
             return false;
         }
-        if event == fltk::enums::Event::KeyUp && find_combo.changed() {
+        if event == Event::KeyUp && find_combo.changed() {
             sender.send(Action::Search);
         }
         false
@@ -115,26 +126,24 @@ fn initialize_find_combo(
 }
 
 fn add_middle_row(
-    sender: fltk::app::Sender<Action>,
+    sender: Sender<Action>,
     width: i32,
-) -> (fltk::browser::HoldBrowser, fltk::input::Input, fltk::frame::Frame) {
-    let mut row = fltk::group::Flex::default()
+) -> (HoldBrowser, Input, Frame) {
+    let mut row = Flex::default()
         .with_size(width, ROW_HEIGHT)
-        .with_type(fltk::group::FlexType::Row);
+        .with_type(FlexType::Row);
     row.set_margin(PAD);
-    let mut browser = fltk::browser::HoldBrowser::default();
+    let mut browser = HoldBrowser::default();
     browser.set_column_char('\t');
     browser.handle(move |browser, event| {
         if browser.has_focus() {
-            if event == fltk::enums::Event::KeyUp
-                || event == fltk::enums::Event::Released
-            {
+            if event == Event::KeyUp || event == Event::Released {
                 sender.send(Action::UpdatePreview);
             }
-            if fltk::app::event_is_click()
-                && !fltk::app::event_inside_widget(&browser.scrollbar())
-                && fltk::app::event_button() == 1
-                && fltk::app::event_clicks()
+            if app::event_is_click()
+                && !app::event_inside_widget(&browser.scrollbar())
+                && app::event_button() == 1
+                && app::event_clicks()
             {
                 sender.send(Action::MaybeAddFromTable);
                 return true;
@@ -148,11 +157,8 @@ fn add_middle_row(
     (browser, copy_input, preview_frame)
 }
 
-fn add_right_column(
-    sender: fltk::app::Sender<Action>,
-) -> (fltk::input::Input, fltk::frame::Frame, fltk::group::Flex) {
-    let mut column = fltk::group::Flex::default()
-        .with_type(fltk::group::FlexType::Column);
+fn add_right_column(sender: Sender<Action>) -> (Input, Frame, Flex) {
+    let mut column = Flex::default().with_type(FlexType::Column);
     add_button(
         "Add the selected character from the table to the output editor",
         "&Add",
@@ -164,7 +170,7 @@ fn add_right_column(
         let config = CONFIG.get().read().unwrap();
         config.copy_text.clone()
     };
-    let mut copy_input = fltk::input::Input::default();
+    let mut copy_input = Input::default();
     copy_input.set_value(&copy_text);
     copy_input.set_tooltip("The output editor: chosen characters are added here and the text here gets copied to the clipboard");
     add_button(
@@ -181,7 +187,7 @@ fn add_right_column(
         sender,
         &mut column,
     );
-    let mut preview_frame = fltk::frame::Frame::default();
+    let mut preview_frame = Frame::default();
     let size = preview_frame.label_size();
     preview_frame.set_label_size(size * 3);
     add_button(
@@ -205,7 +211,7 @@ fn add_right_column(
         sender,
         &mut column,
     );
-    fltk::frame::Frame::default().with_size(PAD, PAD);
+    Frame::default().with_size(PAD, PAD);
     add_button(
         "Quit the application",
         "&Quit",
@@ -223,10 +229,10 @@ fn add_button(
     tooltip: &str,
     label: &str,
     action: Action,
-    sender: fltk::app::Sender<Action>,
-    column: &mut fltk::group::Flex,
+    sender: Sender<Action>,
+    column: &mut Flex,
 ) {
-    let mut button = fltk::button::Button::default().with_label(label);
+    let mut button = Button::default().with_label(label);
     button.set_tooltip(tooltip);
     button.visible_focus(false);
     button.set_callback(move |_| {
@@ -236,8 +242,8 @@ fn add_button(
 }
 
 pub(crate) fn populate_history_menu_button(
-    history_menu_button: &mut fltk::menu::MenuButton,
-    sender: fltk::app::Sender<Action>,
+    history_menu_button: &mut MenuButton,
+    sender: Sender<Action>,
 ) {
     history_menu_button.clear();
     let config = CONFIG.get().read().unwrap();
@@ -249,8 +255,8 @@ pub(crate) fn populate_history_menu_button(
         }
         history_menu_button.add_emit(
             &format!("&{}  {c}", MENU_CHARS[base + i]),
-            fltk::enums::Shortcut::None,
-            fltk::menu::MenuFlag::Normal,
+            Shortcut::None,
+            MenuFlag::Normal,
             sender,
             Action::AddChar(*c),
         );
@@ -279,28 +285,26 @@ fn get_config_window_rect() -> (i32, i32, i32, i32) {
 }
 
 pub fn add_event_handlers(
-    main_window: &mut fltk::window::Window,
-    sender: fltk::app::Sender<Action>,
+    main_window: &mut Window,
+    sender: Sender<Action>,
 ) {
     // Both of these are really needed!
     main_window.set_callback(move |_| {
-        if fltk::app::event() == fltk::enums::Event::Close
-            || fltk::app::event_key() == fltk::enums::Key::Escape
-        {
+        if app::event() == Event::Close || app::event_key() == Key::Escape {
             sender.send(Action::Quit);
         }
     });
     main_window.handle(move |_, event| match event {
-        fltk::enums::Event::KeyUp => match fltk::app::event_key() {
-            fltk::enums::Key::Help | fltk::enums::Key::F1 => {
+        Event::KeyUp => match app::event_key() {
+            Key::Help | Key::F1 => {
                 sender.send(Action::Help);
                 true
             }
-            fltk::enums::Key::F2 => {
+            Key::F2 => {
                 sender.send(Action::PopupSearches);
                 true
             }
-            fltk::enums::Key::F3 => {
+            Key::F3 => {
                 sender.send(Action::FocusToSearchResults);
                 true
             }

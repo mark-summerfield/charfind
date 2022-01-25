@@ -9,7 +9,7 @@ use crate::options_form;
 use crate::util;
 use crate::Application;
 use flate2::read::GzDecoder;
-use fltk::prelude::*;
+use fltk::{app, prelude::*};
 use std::collections::HashSet;
 use std::io::prelude::*;
 use std::iter::Iterator;
@@ -181,7 +181,7 @@ impl Application {
     pub(crate) fn on_copy(&mut self) {
         let text = self.copy_input.value();
         if !text.is_empty() {
-            fltk::app::copy(&text);
+            app::copy(&text);
         }
     }
 

@@ -6,8 +6,9 @@ use crate::fixed::{
     WINDOW_WIDTH_MIN,
 };
 use crate::util;
-use std::collections::VecDeque;
-use std::iter::Iterator;
+use fltk::{app, dialog};
+use ini::Ini;
+use std::{collections::VecDeque, env, iter::Iterator, path::PathBuf};
 
 #[derive(Clone, Debug)]
 pub struct Config {
@@ -16,7 +17,7 @@ pub struct Config {
     pub window_height: i32,
     pub window_width: i32,
     pub window_scale: f32,
-    pub filename: std::path::PathBuf,
+    pub filename: PathBuf,
     pub searches: VecDeque<String>,
     pub searches_size: usize,
     pub history: VecDeque<char>,
@@ -30,7 +31,7 @@ impl Config {
             filename: get_config_filename(),
             ..Default::default()
         };
-        if let Ok(ini) = ini::Ini::load_from_file(&config.filename) {
+        if let Ok(ini) = Ini::load_from_file(&config.filename) {
             if let Some(properties) = ini.section(Some(WINDOW_SECTION)) {
                 read_window_properties(properties, &mut config);
             }
@@ -52,13 +53,13 @@ impl Config {
         if self.filename.to_string_lossy() == "" {
             self.warning("failed to save configuration: no filename");
         } else {
-            let mut ini = ini::Ini::new();
+            let mut ini = Ini::new();
             ini.with_section(Some(WINDOW_SECTION))
                 .set(X_KEY, x.to_string())
                 .set(Y_KEY, y.to_string())
                 .set(WIDTH_KEY, width.to_string())
                 .set(HEIGHT_KEY, height.to_string())
-                .set(SCALE_KEY, fltk::app::screen_scale(0).to_string());
+                .set(SCALE_KEY, app::screen_scale(0).to_string());
             ini.with_section(Some(GENERAL_SECTION))
                 .set(HISTORY_KEY, self.history_str())
                 .set(HISTORY_SIZE_KEY, self.history_size.to_string())
@@ -82,7 +83,7 @@ impl Config {
         history
     }
 
-    fn save_searches(&self, ini: &mut ini::Ini) {
+    fn save_searches(&self, ini: &mut Ini) {
         for (i, s) in self.searches.iter().enumerate() {
             let key = format!("{SEARCH_KEY}{}", i + 1);
             ini.with_section(Some(GENERAL_SECTION)).set(key, s.clone());
@@ -90,8 +91,8 @@ impl Config {
     }
 
     fn warning(&self, message: &str) {
-        fltk::dialog::message_title(&format!("Warning — {APPNAME}"));
-        fltk::dialog::message(util::x() - 200, util::y() - 100, message);
+        dialog::message_title(&format!("Warning — {APPNAME}"));
+        dialog::message(util::x() - 200, util::y() - 100, message);
     }
 }
 
@@ -118,7 +119,7 @@ impl Default for Config {
             window_height: WINDOW_HEIGHT_MIN,
             window_width: WINDOW_WIDTH_MIN,
             window_scale: 1.0,
-            filename: std::path::PathBuf::new(),
+            filename: PathBuf::new(),
             searches: VecDeque::from(
                 DEFAULT_SEARCHES.map(|s| s.to_string()),
             ),
@@ -130,11 +131,11 @@ impl Default for Config {
     }
 }
 
-fn get_config_filename() -> std::path::PathBuf {
+fn get_config_filename() -> PathBuf {
     let mut dir = dirs::config_dir();
     let mut dot = "";
     if dir.is_none() {
-        if std::env::consts::FAMILY == "unix" {
+        if env::consts::FAMILY == "unix" {
             dot = ".";
         }
         dir = dirs::home_dir();
@@ -142,7 +143,7 @@ fn get_config_filename() -> std::path::PathBuf {
     if let Some(dir) = dir {
         dir.join(format!("{dot}{}.ini", APPNAME.to_lowercase()))
     } else {
-        std::path::PathBuf::new()
+        PathBuf::new()
     }
 }
 
@@ -150,8 +151,8 @@ fn read_window_properties(
     properties: &ini::Properties,
     config: &mut Config,
 ) {
-    let max_x = (fltk::app::screen_size().0 - 100.0) as i32;
-    let max_y = (fltk::app::screen_size().1 - 100.0) as i32;
+    let max_x = (app::screen_size().0 - 100.0) as i32;
+    let max_y = (app::screen_size().1 - 100.0) as i32;
     if let Some(value) = properties.get(X_KEY) {
         config.window_x = util::get_num(value, 0, max_x, config.window_x)
     }
@@ -170,7 +171,7 @@ fn read_window_properties(
         config.window_scale =
             util::get_num(value, SCALE_MIN, SCALE_MAX, config.window_scale);
         if !util::isone32(config.window_scale) {
-            fltk::app::set_screen_scale(0, config.window_scale);
+            app::set_screen_scale(0, config.window_scale);
         }
     }
 }

@@ -12,20 +12,22 @@ mod util;
 
 use crate::application::Application;
 use crate::fixed::APPNAME;
+use config::Config;
+use fltk::dialog;
+use state::Storage;
 use std::{panic, sync};
 
-pub static CONFIG: state::Storage<sync::RwLock<config::Config>> =
-    state::Storage::new();
+pub static CONFIG: Storage<sync::RwLock<Config>> = Storage::new();
 
 fn main() {
     panic::set_hook(Box::new(|info| {
         let err = dbg!(&info);
-        fltk::dialog::message_title(&format!("Error — {APPNAME}"));
+        dialog::message_title(&format!("Error — {APPNAME}"));
         let x = util::x() - 200;
         let y = util::y() - 100;
-        fltk::dialog::message(x, y, &err.to_string());
+        dialog::message(x, y, &err.to_string());
     }));
-    CONFIG.set(sync::RwLock::new(config::Config::new()));
+    CONFIG.set(sync::RwLock::new(Config::new()));
     let mut app = Application::new();
     app.run();
 }
