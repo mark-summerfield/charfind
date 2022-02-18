@@ -14,7 +14,7 @@ use fltk::{
     button::Button,
     enums::{Align, Event, FrameType, Key, Shortcut},
     frame::Frame,
-    group::{Flex, FlexType},
+    group::Flex,
     image::SvgImage,
     input::Input,
     menu::{MenuButton, MenuFlag},
@@ -35,8 +35,7 @@ pub struct Widgets {
 pub fn make(sender: Sender<Action>) -> Widgets {
     Window::set_default_xclass(APPNAME);
     let (main_window, width) = make_main_window();
-    let mut vbox =
-        Flex::default().size_of_parent().with_type(FlexType::Column);
+    let mut vbox = Flex::default().column().size_of_parent();
     vbox.set_margin(PAD);
     let (find_combo, history_menu_button, top_row) =
         add_top_row(sender, width);
@@ -74,9 +73,7 @@ fn add_top_row(
     sender: Sender<Action>,
     width: i32,
 ) -> (InputChoice, MenuButton, Flex) {
-    let mut row = Flex::default()
-        .with_size(width, ROW_HEIGHT)
-        .with_type(FlexType::Row);
+    let mut row = Flex::default().row().with_size(width, ROW_HEIGHT);
     row.set_margin(PAD);
     let mut find_label = Button::default();
     find_label.set_frame(FrameType::NoBox);
@@ -129,9 +126,7 @@ fn add_middle_row(
     sender: Sender<Action>,
     width: i32,
 ) -> (HoldBrowser, Input, Frame) {
-    let mut row = Flex::default()
-        .with_size(width, ROW_HEIGHT)
-        .with_type(FlexType::Row);
+    let mut row = Flex::default().row().with_size(width, ROW_HEIGHT);
     row.set_margin(PAD);
     let mut browser = HoldBrowser::default();
     browser.set_column_char('\t');
@@ -158,7 +153,7 @@ fn add_middle_row(
 }
 
 fn add_right_column(sender: Sender<Action>) -> (Input, Frame, Flex) {
-    let mut column = Flex::default().with_type(FlexType::Column);
+    let mut column = Flex::default().column();
     add_button(
         "Add the selected character from the table to the output editor",
         "&Add",
