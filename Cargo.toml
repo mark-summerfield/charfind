@@ -1,6 +1,8 @@
+cargo-features = ["strip"]
+
 [package]
 name = "charfind"
-version = "1.2.3"
+version = "1.2.4"
 edition = "2021"
 publish = true
 authors = [ "Mark Summerfield <mark@qtrac.eu>",]
@@ -18,7 +20,7 @@ dirs = "^4"
 flate2 = "^1"
 levenshtein = "^1.0.5"
 num = "^0.4"
-rust-ini = "^0.17"
+rust-ini = "^0.18"
 rustc_version_runtime = "0.2.*"
 state = "^0.5"
 thousands = "^0.2.0"
@@ -32,6 +34,7 @@ git = "https://github.com/fltk-rs/fltk-rs"
 status = "passively-maintained"
 
 [profile.release]
-opt-level = "z"
+strip = true
+opt-level = "s" # 3 is fastest binary; use "s" for smallest
 lto = true
 codegen-units = 1
