@@ -7,7 +7,7 @@ use fltk::app;
 use std::env;
 
 pub static APPNAME: &str = "CharFind";
-pub static VERSION: &str = "1.2.4";
+pub static VERSION: &str = "1.2.5";
 pub static CHARDATA: &[u8] = include_bytes!("../data/chardata.txt.gz");
 pub static HELP_HTML: &str = include_str!("../data/help.html");
 pub const ICON: &str = include_str!("../images/charfind.svg");

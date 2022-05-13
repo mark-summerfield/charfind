@@ -87,6 +87,8 @@ def main():
                 keywords |= {'MATHEMATICAL', 'MATH', 'MATHS'}
             if dash:
                 keywords |= {'DASH', 'HYPHEN'}
+            if 'QUOTATION' in keywords:
+                keywords.add('QUOTE')
             keywords = '\v'.join(sorted(keywords))
             outfile.write(f'{cp:X}\t{name}\t{keywords}\n')
     print(f'wrote {OUTFILE} • {time.monotonic() - t:.01f} secs', flush=True)
